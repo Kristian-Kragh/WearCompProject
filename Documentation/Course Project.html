@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Getting and Cleaning Data. Course Project. run_analysis.R</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Getting and Cleaning Data. Course Project. run_analysis.R</h1>
+
+<h3>Download a zip-file from the web:</h3>
+
+<h4><a href="https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip">https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip</a></h4>
+
+<h3>Date Downloaded: 2014-05-12 13:31 CEST</h3>
+
+<pre><code class="r">setwd(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project&quot;)
+</code></pre>
+
+<h3>Read raw data</h3>
+
+<pre><code class="r">raw.names &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/features.txt&quot;, 
+    header = FALSE)
+
+raw.activty.labels &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/activity_labels.txt&quot;, 
+    header = FALSE)
+</code></pre>
+
+<h4>Read Train-data</h4>
+
+<pre><code class="r">raw.train.x &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/train/X_train.txt&quot;, 
+    header = FALSE)
+raw.train.y &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/train/y_train.txt&quot;, 
+    header = FALSE)
+raw.train.subject &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/train/subject_train.txt&quot;, 
+    header = FALSE)
+</code></pre>
+
+<h4>Read Test-data</h4>
+
+<pre><code class="r">raw.test.x &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/test/X_test.txt&quot;, 
+    header = FALSE)
+
+raw.test.y &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/test/y_test.txt&quot;, 
+    header = FALSE)
+raw.test.subject &lt;- read.table(&quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/test/subject_test.txt&quot;, 
+    header = FALSE)
+</code></pre>
+
+<h3>Explore the data</h3>
+
+<pre><code class="r">head(raw.train.x, 2)
+</code></pre>
+
+<pre><code>##       V1       V2      V3      V4      V5      V6      V7      V8      V9
+## 1 0.2886 -0.02029 -0.1329 -0.9953 -0.9831 -0.9135 -0.9951 -0.9832 -0.9235
+## 2 0.2784 -0.01641 -0.1235 -0.9982 -0.9753 -0.9603 -0.9988 -0.9749 -0.9577
+##       V10     V11     V12    V13    V14    V15     V16     V17     V18
+## 1 -0.9347 -0.5674 -0.7444 0.8529 0.6858 0.8143 -0.9655 -0.9999 -0.9999
+## 2 -0.9431 -0.5579 -0.8184 0.8493 0.6858 0.8226 -0.9819 -1.0000 -0.9998
+##       V19     V20     V21     V22     V23     V24     V25    V26     V27
+## 1 -0.9946 -0.9942 -0.9876 -0.9432 -0.4077 -0.6793 -0.6021 0.9293 -0.8530
+## 2 -0.9984 -0.9992 -0.9779 -0.9482 -0.7149 -0.5009 -0.5710 0.6116 -0.3295
+##      V28      V29    V30      V31    V32      V33     V34      V35
+## 1 0.3599 -0.05853 0.2569 -0.22485 0.2641 -0.09525 0.27885 -0.46508
+## 2 0.2842  0.28459 0.1157 -0.09096 0.2943 -0.28121 0.08599 -0.02215
+##        V36     V37      V38      V39    V40    V41     V42    V43     V44
+## 1  0.49194 -0.1909  0.37631  0.43513 0.6608 0.9634 -0.1408 0.1154 -0.9852
+## 2 -0.01666 -0.2206 -0.01343 -0.07269 0.5794 0.9666 -0.1416 0.1094 -0.9974
+##       V45     V46     V47     V48     V49    V50     V51    V52    V53
+## 1 -0.9817 -0.8776 -0.9850 -0.9844 -0.8947 0.8921 -0.1613 0.1247 0.9774
+## 2 -0.9894 -0.9316 -0.9979 -0.9896 -0.9332 0.8921 -0.1613 0.1226 0.9845
+##       V54     V55     V56    V57     V58     V59     V60     V61     V62
+## 1 -0.1232 0.05648 -0.3754 0.8995 -0.9709 -0.9755 -0.9843 -0.9888 -0.9177
+## 2 -0.1149 0.10276 -0.3834 0.9078 -0.9706 -0.9785 -0.9992 -0.9900 -0.9417
+##   V63 V64     V65     V66    V67     V68    V69     V70    V71     V72
+## 1  -1  -1  0.1138 -0.5904 0.5911 -0.5918 0.5925 -0.7454 0.7209 -0.7124
+## 2  -1  -1 -0.2105 -0.4101 0.4139 -0.4176 0.4213 -0.1964 0.1253 -0.1056
+##      V73     V74    V75     V76    V77     V78     V79    V80     V81
+## 1 0.7113 -0.9951 0.9957 -0.9957 0.9917  0.5702  0.4390 0.9869 0.07800
+## 2 0.1091 -0.8339 0.8343 -0.8342 0.8305 -0.8313 -0.8657 0.9744 0.07401
+##        V82      V83     V84     V85     V86     V87     V88     V89
+## 1 0.005001 -0.06783 -0.9935 -0.9884 -0.9936 -0.9945 -0.9862 -0.9928
+## 2 0.005771  0.02938 -0.9955 -0.9811 -0.9918 -0.9956 -0.9789 -0.9913
+##       V90     V91     V92    V93    V94    V95     V96     V97     V98
+## 1 -0.9852 -0.9920 -0.9931 0.9898 0.9920 0.9905 -0.9935 -0.9999 -0.9998
+## 2 -0.9945 -0.9791 -0.9923 0.9926 0.9918 0.9885 -0.9914 -1.0000 -0.9996
+##       V99    V100    V101    V102    V103    V104    V105   V106    V107
+## 1 -0.9999 -0.9944 -0.9860 -0.9892 -0.8199 -0.7930 -0.8889 1.0000 -0.2207
+## 2 -0.9998 -0.9939 -0.9794 -0.9934 -0.8751 -0.6554 -0.7674 0.4897  0.0710
+##     V108   V109   V110     V111   V112   V113   V114    V115    V116
+## 1 0.6368 0.3876 0.2414 -0.05225 0.2642 0.3734 0.3418 -0.5698 0.26540
+## 2 0.3627 0.5273 0.1494  0.06293 0.3705 0.4135 0.1222  0.1806 0.04742
+##      V117    V118    V119    V120      V121     V122   V123    V124
+## 1 -0.4779 -0.3853 0.03364 -0.1265 -0.006101 -0.03136 0.1077 -0.9853
+## 2  0.1666 -0.2088 0.08410 -0.2686 -0.016112 -0.08389 0.1006 -0.9831
+##      V125    V126    V127    V128    V129    V130    V131    V132   V133
+## 1 -0.9766 -0.9922 -0.9846 -0.9764 -0.9924 -0.8670 -0.9338 -0.7476 0.8473
+## 2 -0.9890 -0.9891 -0.9869 -0.9890 -0.9892 -0.8649 -0.9536 -0.7459 0.8337
+##     V134   V135    V136    V137    V138    V139    V140    V141    V142
+## 1 0.9149 0.8308 -0.9672 -0.9996 -0.9994 -0.9998 -0.9834 -0.9786 -0.9930
+## 2 0.9081 0.8289 -0.9806 -0.9998 -0.9999 -0.9998 -0.9928 -0.9893 -0.9902
+##       V143    V144    V145     V146    V147   V148    V149     V150
+## 1 0.082632  0.2023 -0.1688  0.09632 -0.2750 0.4986 -0.2203  1.00000
+## 2 0.007469 -0.5312 -0.1774 -0.38768  0.1791 0.2108 -0.1403 -0.04703
+##       V151   V152    V153    V154    V155   V156    V157    V158    V159
+## 1 -0.97297 0.3167 0.37573 0.72340 -0.7711 0.6902 -0.3318 0.70958  0.1349
+## 2 -0.06495 0.1177 0.08169 0.04236 -0.1499 0.2926 -0.1494 0.04672 -0.2569
+##     V160     V161     V162     V163    V164    V165    V166    V167
+## 1 0.3011 -0.09917 -0.05552 -0.06199 -0.9921 -0.9925 -0.9921 -0.9922
+## 2 0.1694 -0.11050 -0.04482 -0.05924 -0.9899 -0.9973 -0.9939 -0.9899
+##      V168    V169    V170    V171    V172   V173   V174   V175    V176
+## 1 -0.9949 -0.9926 -0.9902 -0.9867 -0.9920 0.9944 0.9918 0.9894 -0.9945
+## 2 -0.9975 -0.9938 -0.9919 -0.9977 -0.9949 0.9905 0.9971 0.9945 -0.9953
+##      V177 V178    V179    V180    V181    V182    V183    V184    V185
+## 1 -0.9999   -1 -0.9999 -0.9923 -0.9969 -0.9922 -0.5899 -0.6885 -0.5721
+## 2 -0.9999   -1 -0.9999 -0.9907 -0.9973 -0.9938 -0.6009 -0.7482 -0.6089
+##      V186     V187   V188     V189    V190     V191   V192   V193   V194
+## 1  0.2924 -0.36200 0.4055 -0.03901 0.98928 -0.41456 0.3916 0.2823 0.9273
+## 2 -0.1933 -0.06741 0.1856  0.04152 0.07235 -0.03538 0.1776 0.0275 0.1827
+##      V195   V196   V197    V198     V199    V200    V201    V202    V203
+## 1 -0.5724 0.6916 0.4683 -0.1311 -0.08716  0.3362 -0.9594 -0.9506 -0.9580
+## 2 -0.1675 0.2533 0.1323  0.2939 -0.01808 -0.3433 -0.9793 -0.9761 -0.9782
+##      V204    V205    V206    V207    V208    V209     V210    V211    V212
+## 1 -0.9463 -0.9926 -0.9594 -0.9985 -0.9576 -0.2326 -0.17318 -0.0229 0.09483
+## 2 -0.9787 -0.9953 -0.9793 -0.9995 -0.9812 -0.4419  0.08157 -0.1094 0.31176
+##      V213    V214    V215    V216    V217    V218    V219    V220    V221
+## 1  0.1918 -0.9594 -0.9506 -0.9580 -0.9463 -0.9926 -0.9594 -0.9985 -0.9576
+## 2 -0.4117 -0.9793 -0.9761 -0.9782 -0.9787 -0.9953 -0.9793 -0.9995 -0.9812
+##      V222     V223    V224    V225    V226    V227    V228    V229    V230
+## 1 -0.2326 -0.17318 -0.0229 0.09483  0.1918 -0.9933 -0.9943 -0.9945 -0.9928
+## 2 -0.4419  0.08157 -0.1094 0.31176 -0.4117 -0.9913 -0.9917 -0.9927 -0.9887
+##      V231    V232    V233    V234    V235   V236    V237     V238     V239
+## 1 -0.9912 -0.9933 -0.9999 -0.9929 -0.8634 0.2831 -0.2373 -0.10543 -0.03821
+## 2 -0.9912 -0.9913 -0.9998 -0.9935 -0.8199 0.4588 -0.2449  0.05614 -0.45835
+##      V240    V241    V242    V243    V244    V245    V246    V247     V248
+## 1 -0.9690 -0.9643 -0.9572 -0.9751 -0.9916 -0.9690 -0.9993 -0.9498  0.07258
+## 2 -0.9807 -0.9838 -0.9820 -0.9847 -0.9916 -0.9807 -0.9997 -0.9829 -0.19290
+##      V249     V250   V251    V252    V253    V254    V255    V256    V257
+## 1  0.5725 -0.73860 0.2126 0.43340 -0.9942 -0.9914 -0.9931 -0.9889 -0.9935
+## 2 -0.2253 -0.01706 0.1558 0.08258 -0.9951 -0.9961 -0.9958 -0.9965 -0.9920
+##      V258    V259    V260    V261   V262    V263    V264     V265    V266
+## 1 -0.9942 -0.9999 -0.9945 -0.6198 0.2928 -0.1769 -0.1458 -0.12407 -0.9948
+## 2 -0.9951 -1.0000 -0.9948 -0.7307 0.2093 -0.1781 -0.1031 -0.04382 -0.9975
+##      V267    V268    V269    V270    V271    V272    V273    V274    V275
+## 1 -0.9830 -0.9393 -0.9954 -0.9831 -0.9062 -0.9969 -0.9845 -0.9321 -0.9938
+## 2 -0.9769 -0.9735 -0.9987 -0.9749 -0.9554 -0.9979 -0.9769 -0.9684 -0.9994
+##      V276    V277    V278    V279    V280    V281 V282    V283    V284
+## 1 -0.9832 -0.8851 -0.9940 -0.9934 -0.9234 -0.9747   -1 -0.9997 -0.9949
+## 2 -0.9738 -0.9488 -0.9983 -0.9927 -0.9895 -0.9858   -1 -0.9994 -0.9986
+##      V285    V286    V287    V288    V289    V290     V291 V292 V293
+## 1 -0.9959 -0.9897 -0.9880 -0.9464 -0.9047 -0.5913 -1.00000   -1   -1
+## 2 -0.9949 -0.9808 -0.9858 -1.0000 -0.9047 -0.7584  0.09677   -1   -1
+##     V294    V295     V296    V297    V298     V299    V300    V301
+## 1 0.2525 0.13184 -0.05205  0.1421 -0.1507 -0.22055 -0.5587 0.24677
+## 2 0.2713 0.04286 -0.01431 -0.6925 -0.9540 -0.04971 -0.3320 0.05668
+##        V302 V303 V304    V305 V306    V307    V308    V309 V310 V311
+## 1 -0.007416   -1   -1 -1.0000   -1 -0.9999 -0.9997 -0.9997   -1   -1
+## 2 -0.289001   -1   -1 -0.9999   -1 -0.9999 -0.9999 -1.0000   -1   -1
+##      V312    V313    V314 V315    V316    V317    V318    V319    V320
+## 1 -1.0000 -0.9999 -0.9998   -1 -0.9999 -0.9997 -0.9999 -0.9999 -0.9999
+## 2 -0.9999 -0.9999 -1.0000   -1 -0.9999 -0.9994 -0.9998 -0.9996 -0.9999
+##      V321    V322    V323    V324    V325    V326    V327    V328    V329
+## 1 -0.9997 -0.9997 -0.9995 -0.9998 -0.9997 -0.9998 -0.9997 -0.9996 -0.9997
+## 2 -0.9995 -0.9997 -0.9996 -0.9999 -0.9995 -0.9996 -0.9996 -0.9997 -0.9994
+##      V330    V331    V332    V333    V334    V335    V336    V337    V338
+## 1 -0.9998 -0.9936 -0.9995 -0.9997 -0.9996 -0.9993 -0.9979 -0.9959 -0.9951
+## 2 -0.9998 -0.9982 -0.9998 -0.9997 -0.9999 -0.9997 -0.9994 -0.9989 -0.9988
+##      V339    V340    V341    V342    V343    V344    V345    V346    V347
+## 1 -0.9947 -0.9997 -0.9989 -0.9957 -0.9949 -0.9995 -0.9923 -0.9872 -0.9897
+## 2 -0.9985 -0.9998 -0.9996 -0.9989 -0.9986 -0.9998 -0.9950 -0.9813 -0.9897
+##      V348    V349    V350    V351    V352    V353    V354    V355    V356
+## 1 -0.9958 -0.9909 -0.9971 -0.9938 -0.9905 -0.9970 -0.9967 -0.9920 -0.9932
+## 2 -0.9967 -0.9821 -0.9926 -0.9950 -0.9829 -0.9916 -0.9974 -0.9849 -0.9932
+##      V357    V358    V359    V360    V361    V362    V363    V364    V365
+## 1 -0.9983 -0.9911 -0.9599 -0.9905 -0.9999 -0.9998 -0.9999 -0.9930 -0.9914
+## 2 -0.9979 -0.9825 -0.9868 -0.9899 -1.0000 -0.9996 -0.9998 -0.9928 -0.9852
+##      V366 V367 V368 V369  V370  V371  V372   V373     V374    V375    V376
+## 1 -0.9962   -1   -1   -1  1.00 -0.24 -1.00 0.8704  0.21070 0.26371 -0.7037
+## 2 -0.9910   -1   -1   -1 -0.32 -0.12 -0.32 0.6085 -0.05368 0.06315 -0.6303
+##      V377    V378    V379    V380    V381 V382 V383    V384 V385    V386
+## 1 -0.9037 -0.5826 -0.9363 -0.5073 -0.8055   -1   -1 -1.0000   -1 -0.9999
+## 2 -0.9104 -0.4144 -0.8506 -0.6555 -0.9160   -1   -1 -0.9999   -1 -0.9999
+##      V387    V388 V389 V390 V391    V392    V393 V394    V395    V396
+## 1 -0.9996 -0.9995   -1   -1   -1 -0.9998 -0.9995   -1 -0.9999 -0.9999
+## 2 -0.9998 -0.9999   -1   -1   -1 -0.9999 -0.9999   -1 -0.9999 -0.9999
+##      V397    V398    V399    V400    V401    V402    V403    V404    V405
+## 1 -0.9999 -0.9998 -0.9999 -0.9997 -0.9997 -0.9996 -0.9998 -0.9999 -0.9998
+## 2 -0.9998 -0.9995 -0.9998 -0.9996 -0.9997 -0.9996 -0.9999 -0.9998 -0.9995
+##      V406    V407    V408    V409    V410    V411    V412    V413    V414
+## 1 -0.9997 -0.9996 -0.9999 -0.9998 -0.9994 -0.9998 -1.0000 -0.9999 -0.9998
+## 2 -0.9996 -0.9996 -0.9996 -0.9998 -0.9999 -0.9998 -0.9998 -0.9998 -0.9998
+##      V415    V416    V417    V418    V419    V420    V421    V422    V423
+## 1 -0.9998 -0.9988 -0.9986 -0.9996 -1.0000 -0.9998 -0.9987 -0.9998 -0.9999
+## 2 -0.9998 -0.9996 -1.0000 -0.9999 -0.9998 -0.9998 -0.9997 -0.9998 -0.9998
+##      V424    V425    V426    V427    V428    V429    V430    V431    V432
+## 1 -0.9866 -0.9818 -0.9895 -0.9850 -0.9739 -0.9940 -0.9865 -0.9836 -0.9924
+## 2 -0.9774 -0.9925 -0.9896 -0.9849 -0.9872 -0.9898 -0.9794 -0.9918 -0.9880
+##      V433    V434    V435    V436    V437    V438    V439    V440    V441
+## 1 -0.9805 -0.9723 -0.9949 -0.9976 -0.9841 -0.9943 -0.9853 -0.9999 -0.9997
+## 2 -0.9874 -0.9848 -0.9902 -0.9869 -0.9991 -0.9944 -0.9869 -0.9998 -0.9999
+##      V442    V443    V444    V445    V446    V447    V448 V449 V450 V451
+## 1 -0.9999 -0.9903 -0.9948 -0.9944 -0.7124 -0.6448 -0.8390   -1   -1   -1
+## 2 -0.9999 -0.9871 -0.9956 -0.9873 -0.6111 -0.7646 -0.7511   -1   -1   -1
+##       V452     V453     V454    V455    V456   V457     V458    V459
+## 1 -0.25755  0.09795  0.54715  0.3773  0.1341 0.2734 -0.09126 -0.4843
+## 2 -0.04817 -0.40161 -0.06818 -0.4586 -0.7970 0.3876  0.14866 -0.1569
+##      V460    V461    V462    V463    V464    V465    V466    V467    V468
+## 1 -0.7829 -0.9999 -0.9999 -1.0000 -1.0000 -0.9999 -1.0000 -0.9999 -1.0000
+## 2 -0.4518 -0.9999 -0.9998 -0.9999 -0.9999 -0.9999 -0.9999 -0.9998 -0.9998
+##      V469    V470    V471    V472    V473    V474    V475 V476 V477 V478
+## 1 -0.9999 -1.0000 -0.9999 -1.0000 -0.9999 -1.0000 -0.9995   -1   -1   -1
+## 2 -0.9998 -0.9999 -0.9999 -0.9998 -0.9998 -0.9999 -0.9999   -1   -1   -1
+##   V479    V480    V481   V482    V483 V484    V485    V486    V487 V488
+## 1   -1 -0.9998 -0.9983 -0.999 -0.9996   -1 -0.9999 -0.9984 -0.9996   -1
+## 2   -1 -1.0000 -1.0000 -1.000 -0.9999   -1 -1.0000 -1.0000 -0.9999   -1
+##      V489 V490    V491 V492    V493    V494    V495    V496    V497
+## 1 -1.0000   -1 -0.9999   -1 -0.9999 -0.9998 -0.9991 -0.9999 -1.0000
+## 2 -0.9999   -1 -0.9999   -1 -1.0000 -0.9999 -1.0000 -1.0000 -0.9999
+##      V498    V499    V500    V501 V502    V503    V504    V505    V506
+## 1 -0.9999 -0.9999 -0.9994 -0.9999   -1 -0.9522 -0.9561 -0.9489 -0.9743
+## 2 -0.9999 -1.0000 -1.0000 -0.9999   -1 -0.9809 -0.9759 -0.9758 -0.9782
+##      V507    V508    V509    V510    V511    V512     V513    V514    V515
+## 1 -0.9257 -0.9522 -0.9983 -0.9733 -0.6464 -0.7931 -0.08844 -0.4365 -0.7968
+## 2 -0.9869 -0.9809 -0.9995 -0.9845 -0.8167 -1.0000 -0.04415 -0.1220 -0.4495
+##      V516    V517    V518    V519    V520    V521    V522    V523 V524
+## 1 -0.9937 -0.9938 -0.9920 -0.9934 -0.9882 -0.9937 -0.9999 -0.9914   -1
+## 2 -0.9903 -0.9920 -0.9897 -0.9945 -0.9895 -0.9903 -0.9999 -0.9911   -1
+##      V525   V526    V527    V528    V529    V530    V531    V532    V533
+## 1 -0.9365 0.3470 -0.5161 -0.8028 -0.9801 -0.9613 -0.9737 -0.9523 -0.9895
+## 2 -0.8413 0.5321 -0.6249 -0.9002 -0.9883 -0.9833 -0.9827 -0.9863 -0.9918
+##      V534    V535    V536    V537    V538   V539    V540    V541    V542
+## 1 -0.9801 -0.9992 -0.9927 -0.7013 -1.0000 -0.129  0.5862  0.3746 -0.9920
+## 2 -0.9883 -0.9998 -0.9940 -0.7207 -0.9487 -0.272 -0.3363 -0.7200 -0.9959
+##      V543    V544    V545    V546    V547    V548    V549    V550 V551
+## 1 -0.9907 -0.9899 -0.9924 -0.9910 -0.9920 -0.9999 -0.9905 -0.8713   -1
+## 2 -0.9964 -0.9954 -0.9969 -0.9944 -0.9959 -1.0000 -0.9945 -1.0000   -1
+##       V552    V553    V554     V555      V556    V557     V558    V559
+## 1 -0.07432 -0.2987 -0.7103 -0.11275  0.030400 -0.4648 -0.01845 -0.8412
+## 2  0.15807 -0.5951 -0.8615  0.05348 -0.007435 -0.7326  0.70351 -0.8448
+##     V560     V561
+## 1 0.1799 -0.05863
+## 2 0.1803 -0.05432
+</code></pre>
+
+<pre><code class="r">head(raw.test.x, 2)
+</code></pre>
+
+<pre><code>##       V1       V2       V3      V4      V5      V6      V7      V8      V9
+## 1 0.2572 -0.02329 -0.01465 -0.9384 -0.9201 -0.6677 -0.9525 -0.9252 -0.6743
+## 2 0.2860 -0.01316 -0.11908 -0.9754 -0.9675 -0.9450 -0.9868 -0.9684 -0.9458
+##       V10     V11     V12    V13    V14    V15     V16     V17     V18
+## 1 -0.8941 -0.5546 -0.4662 0.7172 0.6355 0.7895 -0.8778 -0.9978 -0.9984
+## 2 -0.8941 -0.5546 -0.8060 0.7680 0.6837 0.7967 -0.9691 -0.9996 -0.9996
+##       V19     V20     V21     V22     V23     V24     V25    V26     V27
+## 1 -0.9343 -0.9757 -0.9498 -0.8305 -0.1681 -0.3790  0.2462 0.5212 -0.4878
+## 2 -0.9977 -0.9940 -0.9736 -0.9507 -0.3024 -0.3482 -0.4048 0.5075 -0.1565
+##       V28      V29    V30     V31    V32      V33      V34      V35
+## 1 0.48228 -0.04546 0.2120 -0.1349 0.1309 -0.01418 -0.10597  0.07354
+## 2 0.04067  0.27299 0.1976 -0.1946 0.4114 -0.34047  0.07756 -0.08402
+##       V36      V37      V38     V39     V40    V41     V42    V43     V44
+## 1 -0.1715  0.04006  0.07699 -0.4905 -0.7090 0.9365 -0.2827 0.1153 -0.9254
+## 2  0.0353 -0.01008 -0.10498 -0.4291  0.3992 0.9274 -0.2892 0.1526 -0.9891
+##       V45     V46    V47     V48     V49    V50     V51    V52    V53
+## 1 -0.9370 -0.5643 -0.930 -0.9378 -0.6056 0.9061 -0.2792 0.1529 0.9445
+## 2 -0.9839 -0.9648 -0.989 -0.9832 -0.9652 0.8562 -0.3049 0.1529 0.9445
+##       V54      V55      V56    V57     V58     V59     V60     V61     V62
+## 1 -0.2622 -0.07616 -0.01783 0.8293 -0.8646 -0.9678 -0.9497 -0.9461 -0.7597
+## 2 -0.2622  0.14901  0.05768 0.8056 -0.8582 -0.9572 -0.9884 -0.9817 -0.9712
+##       V63 V64     V65     V66    V67     V68    V69     V70    V71     V72
+## 1 -0.4250  -1  0.2192 -0.4303 0.4310 -0.4318 0.4328 -0.7955 0.7813 -0.7804
+## 2 -0.7289  -1 -0.4650 -0.5099 0.5254 -0.5402 0.5544 -0.7457 0.7332 -0.7374
+##      V73     V74    V75     V76    V77    V78     V79     V80     V81
+## 1 0.7853 -0.9844 0.9872 -0.9894 0.9877 0.9806 -0.9964 -0.9601 0.07205
+## 2 0.7487 -0.8452 0.8693 -0.8931 0.9131 0.9452 -0.9114 -0.7385 0.07018
+##        V82       V83     V84     V85     V86     V87     V88     V89
+## 1  0.04575 -0.106043 -0.9067 -0.9380 -0.9359 -0.9161 -0.9367 -0.9491
+## 2 -0.01788 -0.001721 -0.9492 -0.9727 -0.9777 -0.9693 -0.9737 -0.9786
+##       V90     V91     V92    V93    V94    V95     V96     V97     V98
+## 1 -0.9032 -0.9498 -0.8914 0.8985 0.9502 0.9462 -0.9307 -0.9950 -0.9975
+## 2 -0.9151 -0.9812 -0.9777 0.8985 0.9677 0.9661 -0.9743 -0.9984 -0.9994
+##       V99    V100    V101    V102     V103    V104    V105   V106    V107
+## 1 -0.9970 -0.9364 -0.9469 -0.9688 -0.08517 -0.3103 -0.5103 0.5215 -0.2259
+## 2 -0.9994 -0.9797 -0.9791 -0.9853 -0.49723 -0.6558 -0.6144 0.3980  0.2997
+##     V108   V109   V110    V111   V112   V113      V114    V115     V116
+## 1 0.4917 0.3128 0.2298  0.1140 0.2199 0.4230 -0.082633  0.1404 -0.19623
+## 2 0.2392 0.3664 0.2122 -0.1836 0.5084 0.2321 -0.002832 -0.0381 -0.08266
+##      V117    V118     V119    V120      V121     V122   V123    V124
+## 1 0.07236 -0.2649  0.03585 -0.3497  0.119976 -0.09179 0.1896 -0.8831
+## 2 0.10156 -0.1532 -0.27997  0.4976 -0.001552 -0.18729 0.1807 -0.9256
+##      V125    V126    V127    V128    V129    V130    V131    V132   V133
+## 1 -0.8162 -0.9409 -0.8886 -0.8578 -0.9458 -0.6634 -0.7134 -0.6487 0.8371
+## 2 -0.9296 -0.9676 -0.9179 -0.9500 -0.9670 -0.8103 -0.8699 -0.7032 0.8230
+##     V134  V135    V136    V137    V138    V139    V140    V141    V142
+## 1 0.8253 0.811 -0.7965 -0.9796 -0.9829 -0.9940 -0.8866 -0.9061 -0.9580
+## 2 0.8708 0.844 -0.8888 -0.9969 -0.9952 -0.9959 -0.9113 -0.9607 -0.9693
+##       V143    V144   V145     V146     V147   V148    V149     V150
+## 1  0.77403 -0.2677 0.4522 -0.07845 -0.01258  0.236 -0.1990  0.03392
+## 2 -0.01836 -0.8516 0.3050 -0.24703  0.30891 -0.482  0.5087 -0.25024
+##       V151      V152   V153    V154    V155   V156     V157      V158
+## 1 -0.08078  0.006999 0.2449  0.2165 -0.2797 0.2497  0.01772  0.648465
+## 2  0.19069 -0.136273 0.1995 -0.0119 -0.1385 0.3354 -0.27653 -0.002973
+##      V159    V160    V161    V162     V163    V164    V165    V166    V167
+## 1 -0.2369 -0.3017 -0.2049 -0.1745 -0.09339 -0.9012 -0.9109 -0.9393 -0.9104
+## 2  0.5418 -0.5340 -0.1387 -0.0258 -0.07142 -0.9623 -0.9563 -0.9813 -0.9686
+##      V168    V169    V170    V171    V172   V173   V174   V175    V176
+## 1 -0.9274 -0.9536 -0.8679 -0.9135 -0.8976 0.9049 0.9173 0.9476 -0.9296
+## 2 -0.9740 -0.9822 -0.9593 -0.9511 -0.9796 0.9497 0.9298 0.9771 -0.9751
+##      V177    V178    V179    V180    V181    V182     V183     V184
+## 1 -0.9947 -0.9958 -0.9978 -0.9365 -0.9589 -0.9703  0.03662  0.07646
+## 2 -0.9991 -0.9989 -0.9997 -0.9755 -0.9873 -0.9825 -0.29249 -0.14391
+##      V185     V186     V187    V188    V189    V190    V191     V192
+## 1 -0.1971  0.10651 -0.02081  0.1933  0.3045  0.1157 0.05415  0.06895
+## 2 -0.3861 -0.05297  0.20970 -0.1117 -0.2575 -0.1971 0.25113 -0.04836
+##     V193   V194    V195   V196   V197   V198    V199    V200    V201
+## 1 0.1970 0.3099 -0.2127 0.1732 0.1458 0.1240 -0.1553 -0.3234 -0.8669
+## 2 0.1582 0.1589 -0.2311 0.3157 0.1434 0.2849 -0.1712 -0.2481 -0.9690
+##      V202    V203    V204    V205    V206    V207    V208    V209    V210
+## 1 -0.7052 -0.7440 -0.7608 -0.9816 -0.8669 -0.9802 -0.8595  0.2551 0.05378
+## 2 -0.9539 -0.9632 -0.9376 -0.9859 -0.9690 -0.9989 -0.9762 -0.3293 0.45849
+##      V211   V212    V213    V214    V215    V216    V217    V218    V219
+## 1 -0.2041 0.6105 -0.5644 -0.8669 -0.7052 -0.7440 -0.7608 -0.9816 -0.8669
+## 2 -0.4565 0.4881 -0.3483 -0.9690 -0.9539 -0.9632 -0.9376 -0.9859 -0.9690
+##      V220    V221    V222    V223    V224   V225    V226    V227   V228
+## 1 -0.9802 -0.8595  0.2551 0.05378 -0.2041 0.6105 -0.5644 -0.9298 -0.896
+## 2 -0.9989 -0.9762 -0.3293 0.45849 -0.4565 0.4881 -0.3483 -0.9737 -0.941
+##      V229    V230   V231    V232    V233    V234    V235    V236    V237
+## 1 -0.9004 -0.9030 -0.975 -0.9298 -0.9956 -0.9141 -0.1296  0.2389 -0.3456
+## 2 -0.9597 -0.9288 -0.975 -0.9737 -0.9988 -0.9781 -0.5277 -0.3186  0.1842
+##      V238    V239    V240    V241    V242    V243    V244    V245    V246
+## 1  0.3265 -0.2630 -0.7955 -0.7621 -0.7827 -0.7166 -0.7642 -0.7955 -0.9742
+## 2 -0.4601  0.7134 -0.8984 -0.9109 -0.9011 -0.9024 -0.8938 -0.8984 -0.9942
+##      V247   V248    V249     V250    V251     V252    V253    V254    V255
+## 1 -0.8396 0.6676 0.03562 -0.16189 0.15325 -0.00676 -0.9252 -0.8943 -0.9001
+## 2 -0.9102 0.3946 0.03013 -0.03752 0.08112 -0.22204 -0.9734 -0.9441 -0.9606
+##      V256    V257    V258    V259    V260    V261    V262     V263
+## 1 -0.9167 -0.9764 -0.9252 -0.9958 -0.9118  0.3317 0.51695 -0.51350
+## 2 -0.9293 -0.9764 -0.9734 -0.9991 -0.9844 -0.1862 0.03224  0.01025
+##       V264    V265    V266    V267    V268    V269    V270    V271    V272
+## 1  0.04132 0.01184 -0.9185 -0.9182 -0.7891 -0.9483 -0.9251 -0.6363 -0.9307
+## 2 -0.65002 0.52649 -0.9609 -0.9644 -0.9567 -0.9843 -0.9702 -0.9419 -0.9758
+##      V273    V274    V275    V276    V277    V278    V279    V280    V281
+## 1 -0.9244 -0.7249 -0.9684 -0.9401 -0.5972 -0.9661 -0.9845 -0.9521 -0.8651
+## 2 -0.9703 -0.9442 -0.9931 -0.9744 -0.9427 -0.9724 -0.9856 -0.9995 -0.9576
+##      V282    V283    V284    V285    V286    V287    V288    V289    V290
+## 1 -0.9978 -0.9960 -0.9402 -0.9048 -0.9338 -0.8694 -0.3397 -0.4858 -0.1663
+## 2 -0.9996 -0.9991 -0.9976 -0.9550 -0.9710 -0.9662 -0.6040 -0.7869 -0.6103
+##      V291 V292 V293    V294   V295    V296    V297    V298    V299    V300
+## 1 -1.0000   -1   -1 0.01112 0.1213 -0.5229 -0.5720 -0.8946 -0.3383 -0.6868
+## 2 -0.8065   -1   -1 0.35207 0.1745 -0.3207 -0.9182 -0.9988 -0.3264 -0.6571
+##      V301    V302    V303    V304    V305    V306    V307    V308    V309
+## 1  0.1896 -0.1136 -0.9985 -0.9979 -0.9956 -0.9950 -0.9960 -0.9915 -0.9921
+## 2 -0.3277 -0.6274 -0.9999 -0.9996 -0.9987 -0.9979 -0.9962 -0.9977 -0.9992
+##      V310    V311    V312    V313    V314    V315    V316    V317    V318
+## 1 -0.9998 -0.9982 -0.9947 -0.9943 -0.9947 -0.9980 -0.9937 -0.9962 -0.9980
+## 2 -0.9999 -0.9998 -0.9983 -0.9968 -0.9995 -0.9997 -0.9969 -0.9991 -0.9997
+##      V319    V320    V321    V322    V323    V324    V325    V326    V327
+## 1 -0.9989 -0.9964 -0.9976 -0.9951 -0.9974 -0.9982 -0.9961 -0.9979 -0.9964
+## 2 -0.9996 -0.9986 -0.9998 -0.9996 -0.9991 -0.9994 -0.9992 -0.9992 -0.9997
+##      V328    V329    V330    V331    V332    V333    V334    V335    V336
+## 1 -0.9976 -0.9962 -0.9962 -0.9247 -0.9941 -0.9953 -0.9990 -0.9979 -0.9949
+## 2 -0.9992 -0.9992 -0.9989 -0.9972 -0.9993 -0.9997 -0.9997 -0.9994 -0.9993
+##      V337    V338    V339    V340    V341    V342    V343    V344    V345
+## 1 -0.9893 -0.9801 -0.9379 -0.9967 -0.9970 -0.9864 -0.9392 -0.9984 -0.8996
+## 2 -0.9991 -1.0000 -0.9975 -0.9997 -0.9994 -0.9994 -0.9976 -0.9997 -0.9435
+##      V346    V347    V348    V349    V350    V351    V352    V353    V354
+## 1 -0.9375 -0.9236 -0.9244 -0.9432 -0.9479 -0.8966 -0.9383 -0.9426 -0.9486
+## 2 -0.9692 -0.9734 -0.9616 -0.9800 -0.9808 -0.9458 -0.9773 -0.9772 -0.9774
+##      V355    V356    V357    V358    V359    V360    V361    V362    V363
+## 1 -0.9583 -0.9588 -0.9439 -0.9873 -0.9785 -0.9053 -0.9950 -0.9975 -0.9970
+## 2 -0.9871 -0.9842 -0.9786 -0.9535 -0.9967 -0.9555 -0.9984 -0.9994 -0.9994
+##      V364    V365    V366    V367    V368    V369  V370  V371  V372   V373
+## 1 -0.8871 -0.9358 -0.9537 -0.4707 -0.6722 -0.5963 -0.52  0.08  0.32 0.4510
+## 2 -0.9296 -0.9732 -0.9731 -0.6066 -1.0000 -0.9422 -0.16 -0.32 -0.40 0.4729
+##     V374    V375    V376    V377    V378    V379    V380    V381    V382
+## 1 0.1372 -0.1803 -0.5801 -0.9081 -0.6255 -0.9428 -0.6619 -0.9115 -0.9990
+## 2 0.1672 -0.2431 -0.9256 -0.9659 -0.7208 -0.9924 -0.7647 -0.9448 -0.9999
+##      V383    V384    V385    V386    V387    V388    V389    V390    V391
+## 1 -0.9976 -0.9960 -0.9947 -0.9956 -0.9879 -0.9864 -0.9982 -0.9980 -0.9945
+## 2 -0.9995 -0.9986 -0.9977 -0.9959 -0.9968 -0.9988 -0.9999 -0.9996 -0.9979
+##      V392    V393    V394    V395    V396    V397    V398    V399    V400
+## 1 -0.9920 -0.9863 -0.9969 -0.9908 -0.9994 -0.9986 -0.9987 -0.9964 -0.9972
+## 2 -0.9959 -0.9988 -0.9992 -0.9956 -0.9994 -0.9998 -0.9996 -0.9992 -0.9995
+##      V401    V402   V403    V404    V405    V406    V407    V408    V409
+## 1 -0.9945 -0.9979 -1.000 -0.9986 -0.9974 -0.9954 -0.9982 -0.9985 -0.9960
+## 2 -0.9990 -0.9985 -0.999 -0.9996 -0.9993 -0.9992 -0.9985 -0.9995 -0.9992
+##      V410    V411    V412    V413    V414    V415    V416    V417    V418
+## 1 -0.9936 -0.9978 -0.9971 -0.9987 -0.9967 -0.9951 -0.9985 -0.9991 -0.9959
+## 2 -0.9982 -0.9991 -0.9997 -0.9997 -0.9994 -0.9993 -0.9985 -1.0000 -0.9987
+##      V419    V420    V421    V422    V423    V424    V425    V426    V427
+## 1 -0.9980 -0.9960 -0.9985 -0.9963 -0.9977 -0.8236 -0.8079 -0.9179 -0.9033
+## 2 -0.9997 -0.9994 -0.9986 -0.9992 -0.9996 -0.9225 -0.9265 -0.9682 -0.9271
+##      V428    V429    V430    V431    V432    V433    V434    V435    V436
+## 1 -0.8227 -0.9562 -0.8651 -0.8318 -0.9411 -0.9048 -0.8793 -0.9678 -0.8786
+## 2 -0.9320 -0.9701 -0.9400 -0.9339 -0.9671 -0.9035 -0.9488 -0.9777 -0.9890
+##      V437    V438    V439    V440    V441    V442    V443    V444    V445
+## 1 -0.9483 -0.9197 -0.8285 -0.9929 -0.9827 -0.9980 -0.8789 -0.8382 -0.9291
+## 2 -0.9611 -0.9752 -0.9313 -0.9971 -0.9973 -0.9993 -0.9477 -0.9411 -0.9788
+##         V446     V447    V448 V449    V450   V451    V452     V453    V454
+## 1  0.0007581  0.20014 -0.2534   -1 -0.9355 -0.931 0.18403 -0.05932  0.4381
+## 2 -0.2382949 -0.09075 -0.5945   -1 -0.9355 -0.931 0.01811 -0.22727 -0.1517
+##      V455    V456    V457    V458    V459    V460    V461    V462    V463
+## 1 -0.3954 -0.6988 -0.3875 -0.7864 -0.4857 -0.7868 -0.9946 -0.9905 -0.9928
+## 2  0.5575  0.3803 -0.3965 -0.7591 -0.1502 -0.5484 -0.9971 -0.9993 -0.9991
+##      V464    V465    V466    V467    V468    V469    V470    V471    V472
+## 1 -0.9957 -0.9871 -0.9867 -0.9841 -0.9853 -0.9936 -0.9924 -0.9856 -0.9846
+## 2 -0.9972 -0.9986 -0.9982 -0.9982 -0.9976 -0.9972 -0.9981 -0.9983 -0.9979
+##      V473    V474    V475    V476    V477    V478    V479    V480    V481
+## 1 -0.9933 -0.9927 -0.9779 -0.9949 -0.9978 -0.9948 -0.9924 -0.9881 -0.9904
+## 2 -0.9972 -0.9975 -0.9968 -0.9989 -0.9996 -0.9995 -0.9993 -0.9992 -0.9992
+##      V482    V483    V484    V485    V486    V487    V488    V489    V490
+## 1 -0.9880 -0.9818 -0.9964 -0.9915 -0.9881 -0.9820 -0.9934 -0.9989 -0.9984
+## 2 -0.9997 -0.9972 -0.9994 -0.9993 -0.9993 -0.9972 -0.9994 -0.9994 -0.9998
+##      V491    V492    V493    V494    V495    V496    V497    V498    V499
+## 1 -0.9985 -0.9984 -0.9989 -0.9959 -0.9931 -0.9955 -0.9984 -0.9978 -0.9981
+## 2 -0.9999 -0.9999 -0.9999 -0.9998 -0.9992 -0.9997 -0.9994 -0.9998 -0.9999
+##      V500    V501    V502    V503    V504    V505    V506    V507    V508
+## 1 -0.9941 -0.9982 -0.9983 -0.7909 -0.7111 -0.7267 -0.7777 -0.9449 -0.7909
+## 2 -0.9994 -0.9993 -0.9999 -0.9541 -0.9597 -0.9607 -0.9687 -0.9569 -0.9541
+##      V509    V510    V511    V512    V513     V514    V515    V516    V517
+## 1 -0.9540 -0.8735 -0.1746 -1.0000 -0.4835  0.01104 -0.3845 -0.8951 -0.8964
+## 2 -0.9985 -0.9830 -0.7521 -0.8621  0.2035 -0.20659 -0.5994 -0.9454 -0.9342
+##      V518    V519    V520    V521    V522    V523    V524 V525     V526
+## 1 -0.8882 -0.9285 -0.8981 -0.8951 -0.9935 -0.9215 -0.4846   -1 -0.03536
+## 2 -0.9293 -0.9500 -0.9677 -0.9454 -0.9976 -0.9572 -0.7236   -1 -0.49121
+##      V527    V528    V529    V530    V531    V532    V533    V534    V535
+## 1 -0.2542 -0.7003 -0.7706 -0.7971 -0.7645 -0.8202 -0.9380 -0.7706 -0.9710
+## 2 -0.2154 -0.6660 -0.9245 -0.9168 -0.9194 -0.9180 -0.9911 -0.9245 -0.9957
+##      V536    V537 V538     V539     V540    V541    V542    V543    V544
+## 1 -0.7984  0.1794   -1 -0.04739 -0.46785 -0.7613 -0.8902 -0.9073 -0.8953
+## 2 -0.9331 -0.2189   -1 -0.03147 -0.09065 -0.4618 -0.9520 -0.9382 -0.9380
+##      V545    V546    V547    V548    V549    V550 V551     V552    V553
+## 1 -0.9179 -0.9098 -0.8902 -0.9941 -0.8980 -0.2348   -1  0.07165 -0.3304
+## 2 -0.9499 -0.9869 -0.9520 -0.9983 -0.9513 -0.4311   -1 -0.40119 -0.1218
+##      V554      V555   V556    V557   V558    V559   V560     V561
+## 1 -0.7060  0.006462 0.1629 -0.8259 0.2712 -0.7200 0.2768 -0.05798
+## 2 -0.5949 -0.083495 0.0175 -0.4344 0.9206 -0.6981 0.2813 -0.08390
+</code></pre>
+
+<pre><code class="r">
+head(raw.names)
+</code></pre>
+
+<pre><code>##   V1                V2
+## 1  1 tBodyAcc-mean()-X
+## 2  2 tBodyAcc-mean()-Y
+## 3  3 tBodyAcc-mean()-Z
+## 4  4  tBodyAcc-std()-X
+## 5  5  tBodyAcc-std()-Y
+## 6  6  tBodyAcc-std()-Z
+</code></pre>
+
+<pre><code class="r">raw.activty.labels
+</code></pre>
+
+<pre><code>##   V1                 V2
+## 1  1            WALKING
+## 2  2   WALKING_UPSTAIRS
+## 3  3 WALKING_DOWNSTAIRS
+## 4  4            SITTING
+## 5  5           STANDING
+## 6  6             LAYING
+</code></pre>
+
+<pre><code class="r">
+nrow(raw.train.x)
+</code></pre>
+
+<pre><code>## [1] 7352
+</code></pre>
+
+<pre><code class="r">nrow(raw.train.y)
+</code></pre>
+
+<pre><code>## [1] 7352
+</code></pre>
+
+<pre><code class="r">nrow(raw.train.subject)
+</code></pre>
+
+<pre><code>## [1] 7352
+</code></pre>
+
+<pre><code class="r">nrow(raw.test.x)
+</code></pre>
+
+<pre><code>## [1] 2947
+</code></pre>
+
+<pre><code class="r">nrow(raw.test.y)
+</code></pre>
+
+<pre><code>## [1] 2947
+</code></pre>
+
+<pre><code class="r">nrow(raw.test.subject)
+</code></pre>
+
+<pre><code>## [1] 2947
+</code></pre>
+
+<pre><code class="r">table(raw.train.y)
+</code></pre>
+
+<pre><code>## raw.train.y
+##    1    2    3    4    5    6 
+## 1226 1073  986 1286 1374 1407
+</code></pre>
+
+<pre><code class="r">hist(unlist(raw.train.y))
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAn1BMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZo8AZrU5AAA5ADk5AGU5OWU5OY85ZmU5ZrU5j485j9plAABlADllAGVlOQBlOY9lZjllZmVlj49ltbVltf2POQCPOTmPOWWPZgCPj2WPtY+P27WP29qP2/21ZgC1Zjm1tWW124+1/rW1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v3DqQJ4AAAANXRSTlP/////////////////////////////////////////////////////////////////////AHy10AoAAAAJcEhZcwAACxIAAAsSAdLdfvwAABAwSURBVHic7Z0Le6PGGYWDnW7lbNJUzubS2NskrZWLSbq6/f/fVmYAWayEDd45zIe+9zx54ouOzrC8+oYZDMNne+RSn+XeAJRHgHcqwDsV4J0K8E4FeKcCvFMB3qkA71SAdyrAOxXgnQrwTgV4pwK8UwHeqQDvVIB3KsA7FeCdCvBOBXinArxTAd6pAO9U1sFvb68f9/vd/fVj/V2r1d0nhG5uiquH3ubONFT22J/Znm7KcdvL4Rsq1HzAd369Kj4FfP+7T3BF6/Z28erEU+v5D8TUmg/4+F1Vq8X14+6+KIqKRVl9CfVT/Xz9x+2bD7v7q++rWl5Xv65KdF38vfr9Y2VqodT++O43H/bN52kb33j9Wwh+qvhOQ2WV0MmObyyrrPDmfZ246LYeUg6xbVvr6i3rwkTJzwv89rYI0P5X81iFH6qvcb9/fhP4hVf/qk0f1kWrpsYa/1nwTVQLvtNQRfRh380OH4VV5V+3H7xDbuuowTexQfEt8RMR284t++BbdmFPbm6anRa61s1N3I1XD5ubWH+R36J92/XjughvKO6CJfzu4D90zMfgQynWuE4aiqi62dWRenv7Q9WdNAf/VewTjh0N+Dq2bn4R2zs5bOXRvMDHn8J+Czt6HfdzVUjxm5pfzSHYAvhF0+HWvz34z4FvSrFT8W1D8VPQza6O+psvfvniYXXoTO5OHE3LbYXv7qveYLE/2DLLPviTY3zR1Gwf+Og5gH/6ODwLvvmmc4xvGzoC32ZXQ7TfqmHFj+2o7wl862iO8Y9PXXt59Usc0a8AP0BnpnOrBt25rj7s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" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<pre><code class="r">table(raw.test.y)
+</code></pre>
+
+<pre><code>## raw.test.y
+##   1   2   3   4   5   6 
+## 496 471 420 491 532 537
+</code></pre>
+
+<pre><code class="r">hist(unlist(raw.test.y))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<pre><code class="r">table(raw.train.subject)
+</code></pre>
+
+<pre><code>## raw.train.subject
+##   1   3   5   6   7   8  11  14  15  16  17  19  21  22  23  25  26  27 
+## 347 341 302 325 308 281 316 323 328 366 368 360 408 321 372 409 392 376 
+##  28  29  30 
+## 382 344 383
+</code></pre>
+
+<pre><code class="r">hist(unlist(raw.train.subject))
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAnFBMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZo8AZrU5AAA5ADk5AGU5OWU5OY85ZmU5ZrU5j485j9plAABlADllAGVlOQBlZjllZmVlj49ltbVltf2POQCPOTmPOWWPZgCPj2WPtY+P27WP2/21ZgC1Zjm1tWW124+1/rW1/tq1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v0kFh4aAAAANHRSTlP///////////////////////////////////////////////////////////////////8AS1ciZQAAAAlwSFlzAAALEgAACxIB0t1+/AAAEOhJREFUeJztnYt66sYVRiM7dU3c0xbiJA2cNikkJ4Uk5vb+71aNLlzsLSTNDDDae63vS/Ax2vsXWow0wgi+2oNJvrr3CsB9QLxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGSUb8dvK43O93s8dl+VPNYhrQdDPKHuaNcULQqmHxC+tz3kXCPahLi+YtN6NxS25sEhR/9utFFiK+ufqDg2LR7eTZu2MzHx6U0HLR9uyJTYLii5/ysZo9LnezLMtyF6v8xg2J/N+Pv02e3nazh+/zsbzOf50P0XX21/z3y3yhWkq5fFH99LavNv22KHz81TU+jvizoFXe4ax3UbjKe7nifdnx+TzddTm0LShbvg/N68vH6FZuWj6YY/I6u/GQT1T8dpI5aX+WW2Xh/pHfFhvp65HblO7eP8qF3tZZTbXpq+VF8VWrWvxZUG50vj/v7Z4Ki4OYWvzpEqX4qm35SMo73oeWi1YrVz0ts8f/zar1KVb0diQkvnbnNs9mVG0Htx/cjIqB9TDfjIrxV2zK57rscbnOXEE2dYu43x2WP+yYTx2Mc4mlgw9BxdY/750ffLeTH/LdSXXwXxT7hNMlKvFl2zK+vD0PdetzCHR3FQ9mUTyvpq2Hg/gkKr74l9sUbqusi+2cj73ih3JTlh7cYk78c7XDLX97WF4SXzwnjuLPgiopp73zo/7mm5+/mS8OO5PphyWq5HrQ1i1Pd/VlQPksLXBHimrnXolvnVbGJSHxH47xWTVmm8QXyxzEH58OF8VXP5wd4+ugE/F173zW9Ws+rfixnvUdxddLVMf45XFvXbVsFX/SMv8/4g8T7no/KO3q3WZyky73q/fipV19/sMqk8SfBx3E173364fvn94Wfx9V88aj+HqJj+Kr5U5C3+/qy7Ws5o2M+BPxxwHXMLlzm2mdySP+sPzx5GuRvZtwHY/xJ0HVMf60t9txj3M/1YlAsdj5Emfi37esQj9O7urf1g/R8jH+w66+2qHmMurTudxCfTrnFOebbFwdAc7EH5Y/iHfH3R8bd/WHoEUxqz/tXe4s1oeTMbfYn2dLfBB/aHkSeno6t6jPNRYnyXZn9Z2pJ8/X6R3yclErF17ks3se34Vq5n+9TdT+yl0Iq6z5OWv3lbtOrI8vk1yH9tfqA1hkjTsUw6/Vw21BvFEQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZpF19e/Jnd+hIfuC6t4nez8rKf9Y2v5oTr0ip++7o8uwUdMOKN0n6Mr65N5hivC2b1RkG8UTidMwqTu3uSNXPtaJ/TuZutnHqat+D9xV8Y8YgPJWXxF07nEB9K0uKbQXwoiDdK0uLz07nnFbv6q5Cy+N3n+X71nPv/xOQuOimLd6dxq7H41znEh5KyeEb8FUlZvDvGjznGX4ekxTeD+FAQbxTEGwXxRkG8URBvFMQbBfFGQbxRLoi/9nuyEH9PPEY84jWAeKMg3iiINwrijYJ4oyDeKIg3CuKNgnijIF4DHi+vI14DHq58xEf68w3io3Ej8R7NJBAfDcQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URA/HKJ+ejTih0OsrXi5BPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvEN+tBPHJgXgvwsVHvWjRJ9/jnv4liO/RAfERm0kgPlq+NvGbUbHrfVwGJkkg/ibNJFrF72bT4nb99BaWJIH4mzSTaBW/fV2e3XonSSD+Js0kGPHR8pWJ328nHOPDmg1UfDOI71aC+B4dEB+xmQSnc9HylYlnchfcbJjihdO5eK+nI/4mzSQY8dHylYnndC642UDFN4P4biWI79HhNn+oR/wFNqPpbpZlHw/x9xnxiO9/j0Snyd0in99tPqUxuUN8/3skupzO7T7P0/nrHOL73yPRvqvPh/t6nJ/OPQcmSSD+Js0kOkzuFsWc6qN3xHcsGar4SEn9OiA+YjMJxEeLQXyMDoiP2EwC8dFiEB+jA+IjNpNAfLQYxMfogPiIzSQQHy0G8TE6ID5iMwnER4tBfIwOiI/YTALx0WIQH6MD4iM2k0B8tBjEx+iA+IjNJBAfLQbxMTogPmIzCcRHi0F8jA6Ij9hMAvHRYhAfowPiIzaTQHy0GMTH6ID4iM0kEB8tBvExOiA+YjMJxEeLQXyMDoiP2EwC8dFiEB+jA+IjNpNAfLQYxMfogPiIzSQQHy0G8TE6ID5iMwnER4tBfIwOiI/YTALx0WIQH6MD4iM2k0B8tBjEx+iA+IjNJBAfLQbxMTogPmIzCcRHi0F8jA6Ij9hMAvHRYhAfowPiIzaTQHy0GMTH6ID4iM0kSvHbifBx9K0gvltJwuL3+3WWPcx7VSK+a0nS4vfua4eybNqnFvHdSpIWvxm5ES9849AFEN+tJGHx24nwtXKtIL5bScLi/UB8t5KUxa/zo/uq7+wO8d1KEha//dY537z0OcIjvmtJwuLLL4kXviL+IojvVpKw+PJL4oWviL8I4ruVpCzeC8R3K0F8jw6Ij9hM4jCrz/rv6xHfrSRh8dtJr9dqvZL6dUB8xGYSlfheL9X6JfXrgPiIzSSqXf1i3KvKJ6lfB8RHbCZR7+o5xgfHDFG8H4jvVoL4Hh0QH7GZRCV+N8ue/viWP9KExAxR/G423nx6k1+r34yajv+I71aSsPj8dC4XL57UlX+/Ef+Cg/huJQmLL0f8Shrx9bNBeFYgvltJwuKLN1pm4p6eER/cLGXxF2g+x0d8t5KBim8G8d1KEhbPK3cRYoYovmQlvmDP6Vxos+TFczoXFDNc8WtpVy+czmU1vZIkEH+TZhJnx3jp3RiM+OBmCYu/BKdzoc0GKr4ZxHcrSVh8Nap7ntAhvltJwuL3q+f6fzLi1VWI71aSsPhyyi6ezl3YGSC+W0nC4ncz99qNPOK3k1w5Iz6gWcLiy7/ONe3pt5On3xHv3yxl8S1sRtKsD/HdSgYsPkZSvw6Ij9hMgjdbRosZovhLb7ZsBvHdSrJmPJr1LxFpfbPlBVSLv7Orm4548c2WF1At/r4ltz2d6/tZd4i/Wgmz+iuEXit/iOK5Pr57fv+jf8Lid5/7fnJ1/6R+HdIVf5OSm4143mUbnj9E8X4g/moliL9C6LXyhyfeb2r3ISnmax6Ij9lMoha/+dT/A+vfi++/Roi/STMJxEfLv/fjT1D8bV749sC6eK/32DLir1gyqFn9vR+4B4j3AvFXK0F8jxIPEO8F4q9WgvgeJR4g3gvEX60E8T1Kmnvd+Q10iI9xj4/42+Tf+/Ej/k759378ZsXf+6+Dd3/8jfdIaBJPfg8Qrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680UQrz9fBPH680XaxW9GTd9egfhh5Iu0it/NpsXt+uN3TSN+GPkireLrL6UTvpwO8cPIF2HE688XaT/GN3/hMOKHkS/CrF5/vgji9eeLcDqnP1+EyZ3+fBGf07mGLwBI9oFbzxdhxOvPF+F0Tn++CLN6/fkiiNefL9LpdO5hzmv1A84X6TS5283GiB9uvkjH07nFM+IHmy/S9XRu9fUL4geaL9LldG7sblYfz+cQP4x8EWb1+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/XwTx+vNFEK8/X6Rd/GaUOR6XbUnJPnDr+SKt4nezaXG7fnprSUr2gVvPF2kVv31dnt26hJp3wXBf4oq/MOJhwLQf47eT4ukkHONhwITM6mHAIN4oiDcK4o2CeKMg3iiINwrijYJ4oyDeKIg3SkTxd/7bFNxNPPUDqke80XrEG61HvNF6xButR7zResQbrecFHKMg3iiINwrijYJ4oyDeKIg3CuKNgnijIN4oscRvJ1nQddSrLOiC3M3LMmgdinrvdXAfGjINyK/qvfPXZV2v/Eji3VX0q+eABotpSPzaPfCAdSjqvddh++18v/lm7p1f1Xvnu2dtHtwvP5J493kZxajxZPd5HpC+ePg5z/Zfh7Leex3Wbmsvpt75VX3QNsiD++VHEr/59FY8cX0pPn0hYNC7BxyyDq4+aB3y4KBtkBcG5edDvV9+JPHug1JCxLs9Xcgz3okLWYfiiROwDrvZOCjf1Qfkb0YP8575iYz4goDjfIwRH7AO28k4aBsU9QH5HnucRI7xBYHiQ9YhTPxm5Kr888t6//yy8C7HeLerCpnVu93U7t9hp3Mh61AfKrzWofLmnV/Ve+dX+/h++Qmdxz+ETWqjnMd7rcOquI5l6p1f13tvg6rwHufxMDQQbxTEGwXxRkG8URBvFMQbBfFGQbxREG8UxBsF8UZBvFEQbxTEGwXxRkG8URBvFMQbBfFGUSt+87I8vte4fC/luHnRxn+dU775+f1VDy7q09C+eVez+PN/NLvp/mZ0+V3vxUWLTc+qVFEkvrDrBt9/3HuVqxFfXEG8neT/y6Vt/vbd47K4JtldWeouWSrekp7f++Vwz0kLR3kFctV6v/jB/d6N+KJl8Y7mh/+6H0++ZX0YKBQ/Ki5jK8U7H+56wupa0tG0vCb5ZZmP0JV7K/u4LDy559hiX14dU9aX4ou+TvxiXF+ZvH76/SXgGut7oVD84cbpLq8lq47C9T4915n/85efnsuj9cl0wN1zaLHf74/1pfhpdT2z+3257L5tBpEoysW7D5t4KAayG8Glp0Wx93/97fXLy2+vlbiTe87EH+uL/36Z1+LdJc0P83LegPj7Iorf7+v9fjXit5NpOXj/9Y/d55+eq8KTe87FH+rrEZ/v3Z348pDOiE8Bt/tdPZ6Ld+O8FFdfS1pfCb/OyqP8fn/ybHH3nImv6qvW+0VxuK+O8fnvizniyxeO8fdllWX/fH034ou9dz5My1l9dWnkX76r5vTlhD2/98vxnrOdRlVftXaz+od5PauvrlN8mLvuzOqTJd5rLNKnDwxtT29IfDQ3K+FiZF65g4GAeKMg3iiINwrijYJ4oyDeKIg3CuKNgnijIN4oiDcK4o2CeKMg3iiIN8r/AetY8AiKny/BAAAAAElFTkSuQmCC" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<pre><code class="r">table(raw.test.subject)
+</code></pre>
+
+<pre><code>## raw.test.subject
+##   2   4   9  10  12  13  18  20  24 
+## 302 317 288 294 320 327 364 354 381
+</code></pre>
+
+<pre><code class="r">hist(unlist(raw.test.subject))
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAn1BMVEX9/v0AAAAAADkAAGUAOTkAOWUAOY8AZo8AZrU5AAA5ADk5AGU5OWU5OY85ZmU5ZrU5j485j9plAABlADllAGVlOQBlZjllZmVlj49ltbVltf2POQCPOTmPOWWPZgCPj2WPtY+P27WP29qP2/21ZgC1Zjm1tWW124+1/rW1/tq1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v0uHV+iAAAANXRSTlP/////////////////////////////////////////////////////////////////////AHy10AoAAAAJcEhZcwAACxIAAAsSAdLdfvwAAA7xSURBVHic7Z2LduO2FUVDO3XtuNPUmknS2JMmrZRMaiW1Hvz/bysAPnwlUyYlkSLAs/daM7bkQ4DiFkCAEsmvcpDkq7FXAMYB8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBcF8aIgXhTEi4J4URAvCuJFQbwoiBclJvGb2fVznm+frp+L3yoWj2cUur7LruYHq2uoaHkg3rY+h9bSv566vubl1ncPLVX2T5zid55eZOeIP7z0GxEhupndnlTiwXrevJ6G5RbvRgYhTvHhN9dWs+vn7VOWZc7F0v3w7cI9vv59dvOyfbr63rXllXvaNdFV9lf3/LMLVZu/yIelb17ycvtvwoLXv/mCX1v8TkVLV8JO2WHBpSvLL5zndn18XbtrWT+xX59btHh51XJ+iXq5VXbxJh+v+M0s89L+V2yahX/gfoYt9fWd357+r38WoZdVVlG2nTLfKL4sqhK/U5FzPs93y/ZvhUVtZ2vXx78b7FqGF1EstV/fzUt4edVyxbPX/30qVyWs4yWJS3zlzm+j9V25MXxnuL5zPjazq/n6LrS/sD1vq8Wun1eZXyB79BH/XJ2vu2Ar4sFJLES8qSgo2C3b7YE3sx9cd1Lu/Iv1CbG9hYuaiyd26/OrUtdVLBfeBY/Fci27gyGIV3x45LeH3zSrYMK1vfBLsT0LDz7mxRctuHq2zjeJD++JV/E7FZVmbNlur7/+5pdv5ou6M/HrE/A2zcL1i9jr6os/F2/Qcrm6cy/Ft44o+yYu8W/28VnZZg+JD5la/Ovb4V3x5S87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" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<h3>Merge the data</h3>
+
+<pre><code class="r">##### Make Column names (a little) more tidy.
+modnames.tmp1 &lt;- sub(&quot;()&quot;, &quot;&quot;, (raw.names[, 2]), fixed = TRUE)
+modnames.tmp2 &lt;- sub(&quot;^t&quot;, &quot;Time&quot;, (modnames.tmp1))
+modnames &lt;- sub(&quot;^f&quot;, &quot;Freq&quot;, (modnames.tmp2))
+##### Look-up activity-label
+raw.train.y.activ &lt;- merge(raw.train.y, raw.activty.labels, by = 1, sort = FALSE)
+raw.test.y.activ &lt;- merge(raw.test.y, raw.activty.labels, by = 1, sort = FALSE)
+##### Column bind activity-labels and subject
+cnames &lt;- c(modnames, &quot;activity&quot;, &quot;subject&quot;)
+raw.train &lt;- cbind(raw.train.x, raw.train.y.activ[, 2], raw.train.subject)
+colnames(raw.train) &lt;- cnames
+raw.test &lt;- cbind(raw.test.x, raw.test.y.activ[, 2], raw.test.subject)
+colnames(raw.test) &lt;- cnames
+##### Row bind train and test data
+raw.total &lt;- rbind(raw.train, raw.test)
+</code></pre>
+
+<h3>Subset the data</h3>
+
+<pre><code class="r">##### subset to variables with mean- and std-measurements.
+subset.total &lt;- raw.total[, c(1:6, 41:46, 81:86, 121:126, 161:166, 201:202, 
+    214:215, 227:228, 240:241, 253:254, 266:271, 345:350, 424:429, 503:504, 
+    516:517, 529:530, 542:543, 562, 563)]
+head(subset.total)
+</code></pre>
+
+<pre><code>##   TimeBodyAcc-mean-X TimeBodyAcc-mean-Y TimeBodyAcc-mean-Z
+## 1             0.2886           -0.02029            -0.1329
+## 2             0.2784           -0.01641            -0.1235
+## 3             0.2797           -0.01947            -0.1135
+## 4             0.2792           -0.02620            -0.1233
+## 5             0.2766           -0.01657            -0.1154
+## 6             0.2772           -0.01010            -0.1051
+##   TimeBodyAcc-std-X TimeBodyAcc-std-Y TimeBodyAcc-std-Z
+## 1           -0.9953           -0.9831           -0.9135
+## 2           -0.9982           -0.9753           -0.9603
+## 3           -0.9954           -0.9672           -0.9789
+## 4           -0.9961           -0.9834           -0.9907
+## 5           -0.9981           -0.9808           -0.9905
+## 6           -0.9973           -0.9905           -0.9954
+##   TimeGravityAcc-mean-X TimeGravityAcc-mean-Y TimeGravityAcc-mean-Z
+## 1                0.9634               -0.1408               0.11537
+## 2                0.9666               -0.1416               0.10938
+## 3                0.9669               -0.1420               0.10188
+## 4                0.9676               -0.1440               0.09985
+## 5                0.9682               -0.1488               0.09449
+## 6                0.9679               -0.1482               0.09191
+##   TimeGravityAcc-std-X TimeGravityAcc-std-Y TimeGravityAcc-std-Z
+## 1              -0.9852              -0.9817              -0.8776
+## 2              -0.9974              -0.9894              -0.9316
+## 3              -0.9996              -0.9929              -0.9929
+## 4              -0.9966              -0.9814              -0.9785
+## 5              -0.9984              -0.9881              -0.9787
+## 6              -0.9990              -0.9868              -0.9973
+##   TimeBodyAccJerk-mean-X TimeBodyAccJerk-mean-Y TimeBodyAccJerk-mean-Z
+## 1                0.07800               0.005001              -0.067831
+## 2                0.07401               0.005771               0.029377
+## 3                0.07364               0.003104              -0.009046
+## 4                0.07732               0.020058              -0.009865
+## 5                0.07344               0.019122               0.016780
+## 6                0.07793               0.018684               0.009344
+##   TimeBodyAccJerk-std-X TimeBodyAccJerk-std-Y TimeBodyAccJerk-std-Z
+## 1               -0.9935               -0.9884               -0.9936
+## 2               -0.9955               -0.9811               -0.9918
+## 3               -0.9907               -0.9810               -0.9897
+## 4               -0.9927               -0.9876               -0.9935
+## 5               -0.9964               -0.9884               -0.9925
+## 6               -0.9948               -0.9887               -0.9923
+##   TimeBodyGyro-mean-X TimeBodyGyro-mean-Y TimeBodyGyro-mean-Z
+## 1           -0.006101            -0.03136             0.10773
+## 2           -0.016112            -0.08389             0.10058
+## 3           -0.031698            -0.10234             0.09613
+## 4           -0.043410            -0.09139             0.08554
+## 5           -0.033960            -0.07471             0.07739
+## 6           -0.028776            -0.07039             0.07901
+##   TimeBodyGyro-std-X TimeBodyGyro-std-Y TimeBodyGyro-std-Z
+## 1            -0.9853            -0.9766            -0.9922
+## 2            -0.9831            -0.9890            -0.9891
+## 3            -0.9763            -0.9936            -0.9864
+## 4            -0.9914            -0.9924            -0.9876
+## 5            -0.9852            -0.9924            -0.9874
+## 6            -0.9852            -0.9921            -0.9831
+##   TimeBodyGyroJerk-mean-X TimeBodyGyroJerk-mean-Y TimeBodyGyroJerk-mean-Z
+## 1                -0.09917                -0.05552                -0.06199
+## 2                -0.11050                -0.04482                -0.05924
+## 3                -0.10849                -0.04241                -0.05583
+## 4                -0.09117                -0.03633                -0.06046
+## 5                -0.09077                -0.03763                -0.05829
+## 6                -0.09425                -0.04336                -0.04194
+##   TimeBodyGyroJerk-std-X TimeBodyGyroJerk-std-Y TimeBodyGyroJerk-std-Z
+## 1                -0.9921                -0.9925                -0.9921
+## 2                -0.9899                -0.9973                -0.9939
+## 3                -0.9885                -0.9956                -0.9915
+## 4                -0.9911                -0.9966                -0.9933
+## 5                -0.9914                -0.9965                -0.9945
+## 6                -0.9916                -0.9960                -0.9931
+##   TimeBodyAccMag-mean TimeBodyAccMag-std TimeGravityAccMag-mean
+## 1             -0.9594            -0.9506                -0.9594
+## 2             -0.9793            -0.9761                -0.9793
+## 3             -0.9837            -0.9880                -0.9837
+## 4             -0.9865            -0.9864                -0.9865
+## 5             -0.9928            -0.9913                -0.9928
+## 6             -0.9943            -0.9952                -0.9943
+##   TimeGravityAccMag-std TimeBodyAccJerkMag-mean TimeBodyAccJerkMag-std
+## 1               -0.9506                 -0.9933                -0.9943
+## 2               -0.9761                 -0.9913                -0.9917
+## 3               -0.9880                 -0.9885                -0.9904
+## 4               -0.9864                 -0.9931                -0.9934
+## 5               -0.9913                 -0.9935                -0.9959
+## 6               -0.9952                 -0.9930                -0.9954
+##   TimeBodyGyroMag-mean TimeBodyGyroMag-std TimeBodyGyroJerkMag-mean
+## 1              -0.9690             -0.9643                  -0.9942
+## 2              -0.9807             -0.9838                  -0.9951
+## 3              -0.9763             -0.9861                  -0.9934
+## 4              -0.9821             -0.9874                  -0.9955
+## 5              -0.9852             -0.9891                  -0.9958
+## 6              -0.9859             -0.9864                  -0.9953
+##   TimeBodyGyroJerkMag-std FreqBodyAcc-mean-X FreqBodyAcc-mean-Y
+## 1                 -0.9914            -0.9948            -0.9830
+## 2                 -0.9961            -0.9975            -0.9769
+## 3                 -0.9951            -0.9936            -0.9725
+## 4                 -0.9953            -0.9955            -0.9836
+## 5                 -0.9953            -0.9973            -0.9823
+## 6                 -0.9952            -0.9967            -0.9869
+##   FreqBodyAcc-mean-Z FreqBodyAcc-std-X FreqBodyAcc-std-Y FreqBodyAcc-std-Z
+## 1            -0.9393           -0.9954           -0.9831           -0.9062
+## 2            -0.9735           -0.9987           -0.9749           -0.9554
+## 3            -0.9833           -0.9963           -0.9655           -0.9770
+## 4            -0.9911           -0.9963           -0.9832           -0.9902
+## 5            -0.9884           -0.9986           -0.9801           -0.9919
+## 6            -0.9927           -0.9976           -0.9923           -0.9970
+##   FreqBodyAccJerk-mean-X FreqBodyAccJerk-mean-Y FreqBodyAccJerk-mean-Z
+## 1                -0.9923                -0.9872                -0.9897
+## 2                -0.9950                -0.9813                -0.9897
+## 3                -0.9910                -0.9816                -0.9876
+## 4                -0.9944                -0.9887                -0.9914
+## 5                -0.9963                -0.9888                -0.9906
+## 6                -0.9949                -0.9882                -0.9902
+##   FreqBodyAccJerk-std-X FreqBodyAccJerk-std-Y FreqBodyAccJerk-std-Z
+## 1               -0.9958               -0.9909               -0.9971
+## 2               -0.9967               -0.9821               -0.9926
+## 3               -0.9912               -0.9814               -0.9904
+## 4               -0.9914               -0.9869               -0.9944
+## 5               -0.9969               -0.9886               -0.9929
+## 6               -0.9952               -0.9902               -0.9931
+##   FreqBodyGyro-mean-X FreqBodyGyro-mean-Y FreqBodyGyro-mean-Z
+## 1             -0.9866             -0.9818             -0.9895
+## 2             -0.9774             -0.9925             -0.9896
+## 3             -0.9754             -0.9937             -0.9868
+## 4             -0.9871             -0.9936             -0.9872
+## 5             -0.9824             -0.9930             -0.9887
+## 6             -0.9849             -0.9928             -0.9808
+##   FreqBodyGyro-std-X FreqBodyGyro-std-Y FreqBodyGyro-std-Z
+## 1            -0.9850            -0.9739            -0.9940
+## 2            -0.9849            -0.9872            -0.9898
+## 3            -0.9766            -0.9934            -0.9873
+## 4            -0.9928            -0.9916            -0.9887
+## 5            -0.9860            -0.9920            -0.9879
+## 6            -0.9853            -0.9917            -0.9854
+##   FreqBodyAccMag-mean FreqBodyAccMag-std FreqBodyBodyAccJerkMag-mean
+## 1             -0.9522            -0.9561                     -0.9937
+## 2             -0.9809            -0.9759                     -0.9903
+## 3             -0.9878            -0.9890                     -0.9893
+## 4             -0.9875            -0.9867                     -0.9928
+## 5             -0.9936            -0.9901                     -0.9955
+## 6             -0.9948            -0.9953                     -0.9947
+##   FreqBodyBodyAccJerkMag-std FreqBodyBodyGyroMag-mean
+## 1                    -0.9938                  -0.9801
+## 2                    -0.9920                  -0.9883
+## 3                    -0.9909                  -0.9893
+## 4                    -0.9917                  -0.9894
+## 5                    -0.9944                  -0.9914
+## 6                    -0.9952                  -0.9905
+##   FreqBodyBodyGyroMag-std FreqBodyBodyGyroJerkMag-mean
+## 1                 -0.9613                      -0.9920
+## 2                 -0.9833                      -0.9959
+## 3                 -0.9860                      -0.9950
+## 4                 -0.9878                      -0.9952
+## 5                 -0.9891                      -0.9951
+## 6                 -0.9859                      -0.9951
+##   FreqBodyBodyGyroJerkMag-std activity subject
+## 1                     -0.9907 STANDING       1
+## 2                     -0.9964 STANDING       1
+## 3                     -0.9951 STANDING       1
+## 4                     -0.9952 STANDING       1
+## 5                     -0.9955 STANDING       1
+## 6                     -0.9952 STANDING       1
+</code></pre>
+
+<h3>Calculate averages of each variable by activity and subject.</h3>
+
+<pre><code class="r"># averages &lt;- sapply(raw.total,raw.total$activity,raw.total$subject,FUN=ave)
+# averages &lt;- aggregate(raw.total,
+# by=list(raw.total$activity,raw.total$subject),FUN=ave)
+averages &lt;- aggregate(raw.total[, 1:561], list(raw.total$activity, raw.total$subject), 
+    mean)
+colnames(averages)[1:2] &lt;- c(&quot;activity group&quot;, &quot;subject group&quot;)
+</code></pre>
+
+<h3>Export results</h3>
+
+<pre><code class="r">write.table(subset.total, &quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/result1.txt&quot;, 
+    sep = &quot;,&quot;)
+write.table(averages, &quot;C:/Users/Kristian/SkyDrive/Coursera/Data Science Specialization/Getting and Cleaning Data/Assignment. Course Project/result2.txt&quot;, 
+    sep = &quot;,&quot;)
+</code></pre>
+
+<h3>Appendix !!!. Investigate apply etc.</h3>
+
+<pre><code class="r">xx &lt;- data.frame(group = rep(1:4, 100), a = rnorm(400), b = rnorm(400))
+head(xx)
+</code></pre>
+
+<pre><code>##   group        a       b
+## 1     1 -0.20181 -1.7215
+## 2     2 -1.42139 -0.2486
+## 3     3  0.39598  0.7490
+## 4     4  0.80898 -0.2044
+## 5     1 -0.05608  1.8496
+## 6     2 -1.99949 -0.3027
+</code></pre>
+
+<pre><code class="r">result &lt;- by(xx[, 2:3], xx$group, function(x) {
+    cor(x$a, x$b)
+})
+result
+</code></pre>
+
+<pre><code>## xx$group: 1
+## [1] 0.1481
+## -------------------------------------------------------- 
+## xx$group: 2
+## [1] 0.166
+## -------------------------------------------------------- 
+## xx$group: 3
+## [1] 0.07295
+## -------------------------------------------------------- 
+## xx$group: 4
+## [1] 0.04018
+</code></pre>
+
+<pre><code class="r">result.dataframe &lt;- as.data.frame(as.matrix(result))
+result.numeric &lt;- as.numeric(result)
+result.vector &lt;- as.vector(result)
+result.dataframe$C &lt;- rownames(result)
+
+x &lt;- 1:20
+y &lt;- factor(rep(letters[1:5], each = 4))
+tapply(x, y, mean)
+</code></pre>
+
+<pre><code>##    a    b    c    d    e 
+##  2.5  6.5 10.5 14.5 18.5
+</code></pre>
+
+<pre><code class="r">tapply(x, y, ave)
+</code></pre>
+
+<pre><code>## $a
+## [1] 2.5 2.5 2.5 2.5
+## 
+## $b
+## [1] 6.5 6.5 6.5 6.5
+## 
+## $c
+## [1] 10.5 10.5 10.5 10.5
+## 
+## $d
+## [1] 14.5 14.5 14.5 14.5
+## 
+## $e
+## [1] 18.5 18.5 18.5 18.5
+</code></pre>
+
+<pre><code class="r">
+
+
+total &lt;- raw.total[, c(1:2, 562:563)]
+
+# by(xx[,2:3], xx$group, function(x) {mean(x[,2:3])})
+averages &lt;- by(total[, 1:2], total$activity, function(x) {
+    mean(x[, 1])
+})
+averages
+</code></pre>
+
+<pre><code>## total$activity: LAYING
+## [1] 0.2745
+## -------------------------------------------------------- 
+## total$activity: SITTING
+## [1] 0.2727
+## -------------------------------------------------------- 
+## total$activity: STANDING
+## [1] 0.2728
+## -------------------------------------------------------- 
+## total$activity: WALKING
+## [1] 0.2761
+## -------------------------------------------------------- 
+## total$activity: WALKING_DOWNSTAIRS
+## [1] 0.273
+## -------------------------------------------------------- 
+## total$activity: WALKING_UPSTAIRS
+## [1] 0.2772
+</code></pre>
+
+<pre><code class="r">
+x &lt;- total[, 1]
+y &lt;- factor(total[, 3])
+tapply(x, y, mean)
+</code></pre>
+
+<pre><code>##             LAYING            SITTING           STANDING 
+##             0.2745             0.2727             0.2728 
+##            WALKING WALKING_DOWNSTAIRS   WALKING_UPSTAIRS 
+##             0.2761             0.2730             0.2772
+</code></pre>
+
+<pre><code class="r">
+x &lt;- total[, 1:2]
+y &lt;- factor(total[, 3])
+tapply(x, y, mean)
+</code></pre>
+
+<pre><code>## Error: arguments must have same length
+</code></pre>
+
+<pre><code class="r">length(x)
+</code></pre>
+
+<pre><code>## [1] 2
+</code></pre>
+
+<pre><code class="r">length(y)
+</code></pre>
+
+<pre><code>## [1] 10299
+</code></pre>
+
+<pre><code class="r">
+state.x77
+</code></pre>
+
+<pre><code>##                Population Income Illiteracy Life Exp Murder HS Grad Frost
+## Alabama              3615   3624        2.1    69.05   15.1    41.3    20
+## Alaska                365   6315        1.5    69.31   11.3    66.7   152
+## Arizona              2212   4530        1.8    70.55    7.8    58.1    15
+## Arkansas             2110   3378        1.9    70.66   10.1    39.9    65
+## California          21198   5114        1.1    71.71   10.3    62.6    20
+## Colorado             2541   4884        0.7    72.06    6.8    63.9   166
+## Connecticut          3100   5348        1.1    72.48    3.1    56.0   139
+## Delaware              579   4809        0.9    70.06    6.2    54.6   103
+## Florida              8277   4815        1.3    70.66   10.7    52.6    11
+## Georgia              4931   4091        2.0    68.54   13.9    40.6    60
+## Hawaii                868   4963        1.9    73.60    6.2    61.9     0
+## Idaho                 813   4119        0.6    71.87    5.3    59.5   126
+## Illinois            11197   5107        0.9    70.14   10.3    52.6   127
+## Indiana              5313   4458        0.7    70.88    7.1    52.9   122
+## Iowa                 2861   4628        0.5    72.56    2.3    59.0   140
+## Kansas               2280   4669        0.6    72.58    4.5    59.9   114
+## Kentucky             3387   3712        1.6    70.10   10.6    38.5    95
+## Louisiana            3806   3545        2.8    68.76   13.2    42.2    12
+## Maine                1058   3694        0.7    70.39    2.7    54.7   161
+## Maryland             4122   5299        0.9    70.22    8.5    52.3   101
+## Massachusetts        5814   4755        1.1    71.83    3.3    58.5   103
+## Michigan             9111   4751        0.9    70.63   11.1    52.8   125
+## Minnesota            3921   4675        0.6    72.96    2.3    57.6   160
+## Mississippi          2341   3098        2.4    68.09   12.5    41.0    50
+## Missouri             4767   4254        0.8    70.69    9.3    48.8   108
+## Montana               746   4347        0.6    70.56    5.0    59.2   155
+## Nebraska             1544   4508        0.6    72.60    2.9    59.3   139
+## Nevada                590   5149        0.5    69.03   11.5    65.2   188
+## New Hampshire         812   4281        0.7    71.23    3.3    57.6   174
+## New Jersey           7333   5237        1.1    70.93    5.2    52.5   115
+## New Mexico           1144   3601        2.2    70.32    9.7    55.2   120
+## New York            18076   4903        1.4    70.55   10.9    52.7    82
+## North Carolina       5441   3875        1.8    69.21   11.1    38.5    80
+## North Dakota          637   5087        0.8    72.78    1.4    50.3   186
+## Ohio                10735   4561        0.8    70.82    7.4    53.2   124
+## Oklahoma             2715   3983        1.1    71.42    6.4    51.6    82
+## Oregon               2284   4660        0.6    72.13    4.2    60.0    44
+## Pennsylvania        11860   4449        1.0    70.43    6.1    50.2   126
+## Rhode Island          931   4558        1.3    71.90    2.4    46.4   127
+## South Carolina       2816   3635        2.3    67.96   11.6    37.8    65
+## South Dakota          681   4167        0.5    72.08    1.7    53.3   172
+## Tennessee            4173   3821        1.7    70.11   11.0    41.8    70
+## Texas               12237   4188        2.2    70.90   12.2    47.4    35
+## Utah                 1203   4022        0.6    72.90    4.5    67.3   137
+## Vermont               472   3907        0.6    71.64    5.5    57.1   168
+## Virginia             4981   4701        1.4    70.08    9.5    47.8    85
+## Washington           3559   4864        0.6    71.72    4.3    63.5    32
+## West Virginia        1799   3617        1.4    69.48    6.7    41.6   100
+## Wisconsin            4589   4468        0.7    72.48    3.0    54.5   149
+## Wyoming               376   4566        0.6    70.29    6.9    62.9   173
+##                  Area
+## Alabama         50708
+## Alaska         566432
+## Arizona        113417
+## Arkansas        51945
+## California     156361
+## Colorado       103766
+## Connecticut      4862
+## Delaware         1982
+## Florida         54090
+## Georgia         58073
+## Hawaii           6425
+## Idaho           82677
+## Illinois        55748
+## Indiana         36097
+## Iowa            55941
+## Kansas          81787
+## Kentucky        39650
+## Louisiana       44930
+## Maine           30920
+## Maryland         9891
+## Massachusetts    7826
+## Michigan        56817
+## Minnesota       79289
+## Mississippi     47296
+## Missouri        68995
+## Montana        145587
+## Nebraska        76483
+## Nevada         109889
+## New Hampshire    9027
+## New Jersey       7521
+## New Mexico     121412
+## New York        47831
+## North Carolina  48798
+## North Dakota    69273
+## Ohio            40975
+## Oklahoma        68782
+## Oregon          96184
+## Pennsylvania    44966
+## Rhode Island     1049
+## South Carolina  30225
+## South Dakota    75955
+## Tennessee       41328
+## Texas          262134
+## Utah            82096
+## Vermont          9267
+## Virginia        39780
+## Washington      66570
+## West Virginia   24070
+## Wisconsin       54464
+## Wyoming         97203
+</code></pre>
+
+<pre><code class="r">aggregate(state.x77, list(Region = state.region), mean)
+</code></pre>
+
+<pre><code>##          Region Population Income Illiteracy Life Exp Murder HS Grad
+## 1     Northeast       5495   4570      1.000    71.26  4.722   53.97
+## 2         South       4208   4012      1.738    69.71 10.581   44.34
+## 3 North Central       4803   4611      0.700    71.77  5.275   54.52
+## 4          West       2915   4703      1.023    71.23  7.215   62.00
+##    Frost   Area
+## 1 132.78  18141
+## 2  64.62  54605
+## 3 138.83  62652
+## 4 102.15 134463
+</code></pre>
+
+<pre><code class="r">
+aggregate(total[, 1:2], list(total$activity, total$subject), mean)
+</code></pre>
+
+<pre><code>##               Group.1 Group.2 TimeBodyAcc-mean-X TimeBodyAcc-mean-Y
+## 1            STANDING       1             0.2657           -0.01830
+## 2            STANDING       2             0.2731           -0.01913
+## 3            STANDING       3             0.2734           -0.01786
+## 4             SITTING       4             0.2725           -0.01963
+## 5            STANDING       4             0.2748           -0.01299
+## 6            STANDING       5             0.2792           -0.01548
+## 7            STANDING       6             0.2724           -0.01757
+## 8             SITTING       7             0.2698           -0.01972
+## 9            STANDING       7             0.2721           -0.01488
+## 10            SITTING       8             0.2708           -0.01819
+## 11            SITTING       9             0.2703           -0.02095
+## 12             LAYING      10             0.2762           -0.01636
+## 13            SITTING      10             0.2779           -0.02010
+## 14            SITTING      11             0.2766           -0.01913
+## 15             LAYING      12             0.2736           -0.01834
+## 16             LAYING      13             0.2753           -0.01381
+## 17            WALKING      13             0.2760           -0.01817
+## 18            SITTING      14             0.2702           -0.01625
+## 19             LAYING      15             0.2768           -0.01824
+## 20            SITTING      15             0.2808           -0.01326
+## 21             LAYING      16             0.2779           -0.01586
+## 22             LAYING      17             0.2740           -0.01754
+## 23            WALKING      18             0.2775           -0.01663
+## 24 WALKING_DOWNSTAIRS      18             0.2747           -0.01815
+## 25             LAYING      19             0.2697           -0.01820
+## 26 WALKING_DOWNSTAIRS      20             0.2663           -0.01718
+## 27   WALKING_UPSTAIRS      20             0.2747           -0.01881
+## 28             LAYING      21             0.2749           -0.01569
+## 29            WALKING      21             0.2783           -0.01833
+## 30            WALKING      22             0.2748           -0.01683
+## 31            WALKING      23             0.2735           -0.01959
+## 32   WALKING_UPSTAIRS      24             0.2768           -0.01768
+## 33            WALKING      25             0.2785           -0.01995
+## 34 WALKING_DOWNSTAIRS      25             0.2714           -0.01853
+## 35 WALKING_DOWNSTAIRS      26             0.2730           -0.01617
+## 36 WALKING_DOWNSTAIRS      27             0.2773           -0.01680
+## 37 WALKING_DOWNSTAIRS      28             0.2787           -0.01612
+## 38   WALKING_UPSTAIRS      28             0.2774           -0.01949
+## 39   WALKING_UPSTAIRS      29             0.2791           -0.01847
+## 40   WALKING_UPSTAIRS      30             0.2763           -0.01759
+</code></pre>
+
+<pre><code class="r">averages &lt;- aggregate(raw.total[, 1:561], list(raw.total$activity, raw.total$subject), 
+    mean)
+colnames(averages)[1:2] &lt;- c(&quot;activity group&quot;, &quot;subject group&quot;)
+head(averages, 2)
+</code></pre>
+
+<pre><code>##   activity group subject group TimeBodyAcc-mean-X TimeBodyAcc-mean-Y
+## 1       STANDING             1             0.2657           -0.01830
+## 2       STANDING             2             0.2731           -0.01913
+##   TimeBodyAcc-mean-Z TimeBodyAcc-std-X TimeBodyAcc-std-Y TimeBodyAcc-std-Z
+## 1            -0.1078           -0.5458           -0.3677           -0.5026
+## 2            -0.1156           -0.6056           -0.4290           -0.5894
+##   TimeBodyAcc-mad-X TimeBodyAcc-mad-Y TimeBodyAcc-mad-Z TimeBodyAcc-max-X
+## 1           -0.5802           -0.3912           -0.4881           -0.3973
+## 2           -0.6399           -0.4453           -0.5946           -0.4164
+##   TimeBodyAcc-max-Y TimeBodyAcc-max-Z TimeBodyAcc-min-X TimeBodyAcc-min-Y
+## 1           -0.2724           -0.4710            0.4192            0.2914
+## 2           -0.2754           -0.5557            0.5387            0.3183
+##   TimeBodyAcc-min-Z TimeBodyAcc-sma TimeBodyAcc-energy-X
+## 1            0.5787         -0.4479              -0.8178
+## 2            0.5626         -0.5296              -0.8405
+##   TimeBodyAcc-energy-Y TimeBodyAcc-energy-Z TimeBodyAcc-iqr-X
+## 1              -0.8686              -0.8101           -0.6445
+## 2              -0.8796              -0.8477           -0.7226
+##   TimeBodyAcc-iqr-Y TimeBodyAcc-iqr-Z TimeBodyAcc-entropy-X
+## 1            -0.569           -0.4829               -0.0365
+## 2            -0.590           -0.6270               -0.1274
+##   TimeBodyAcc-entropy-Y TimeBodyAcc-entropy-Z TimeBodyAcc-arCoeff-X,1
+## 1               0.01200               -0.1840                -0.15529
+## 2              -0.08044               -0.1439                -0.02341
+##   TimeBodyAcc-arCoeff-X,2 TimeBodyAcc-arCoeff-X,3 TimeBodyAcc-arCoeff-X,4
+## 1                  0.1848                -0.10299                  0.1143
+## 2                  0.0912                -0.09496                  0.1434
+##   TimeBodyAcc-arCoeff-Y,1 TimeBodyAcc-arCoeff-Y,2 TimeBodyAcc-arCoeff-Y,3
+## 1                -0.03645                 0.05079                  0.1450
+## 2                 0.01134                 0.04304                  0.1072
+##   TimeBodyAcc-arCoeff-Y,4 TimeBodyAcc-arCoeff-Z,1 TimeBodyAcc-arCoeff-Z,2
+## 1                -0.01989                 0.01516                 0.05220
+## 2                -0.01059                 0.04811                 0.01083
+##   TimeBodyAcc-arCoeff-Z,3 TimeBodyAcc-arCoeff-Z,4
+## 1                 0.02150                -0.13298
+## 2                 0.04652                -0.07289
+##   TimeBodyAcc-correlation-X,Y TimeBodyAcc-correlation-X,Z
+## 1                     -0.2035                     -0.1407
+## 2                     -0.1866                     -0.1696
+##   TimeBodyAcc-correlation-Y,Z TimeGravityAcc-mean-X TimeGravityAcc-mean-Y
+## 1                      0.1962                0.7449              -0.08256
+## 2                      0.1945                0.6608              -0.14722
+##   TimeGravityAcc-mean-Z TimeGravityAcc-std-X TimeGravityAcc-std-Y
+## 1               0.07234              -0.9599              -0.9512
+## 2               0.13487              -0.9630              -0.9600
+##   TimeGravityAcc-std-Z TimeGravityAcc-mad-X TimeGravityAcc-mad-Y
+## 1              -0.9258              -0.9608              -0.9521
+## 2              -0.9454              -0.9641              -0.9610
+##   TimeGravityAcc-mad-Z TimeGravityAcc-max-X TimeGravityAcc-max-Y
+## 1              -0.9277               0.6856             -0.09408
+## 2              -0.9470               0.6013             -0.15854
+##   TimeGravityAcc-max-Z TimeGravityAcc-min-X TimeGravityAcc-min-Y
+## 1              0.08095               0.7556             -0.07017
+## 2              0.13829               0.6741             -0.13032
+##   TimeGravityAcc-min-Z TimeGravityAcc-sma TimeGravityAcc-energy-X
+## 1              0.05657           -0.03676                  0.5278
+## 2              0.12405            0.10287                  0.4282
+##   TimeGravityAcc-energy-Y TimeGravityAcc-energy-Z TimeGravityAcc-iqr-X
+## 1                 -0.7052                 -0.8633              -0.9632
+## 2                 -0.6510                 -0.7982              -0.9669
+##   TimeGravityAcc-iqr-Y TimeGravityAcc-iqr-Z TimeGravityAcc-entropy-X
+## 1              -0.9550              -0.9336                  -0.5921
+## 2              -0.9642              -0.9523                  -0.5254
+##   TimeGravityAcc-entropy-Y TimeGravityAcc-entropy-Z
+## 1                  -0.8666                  -0.8615
+## 2                  -0.9612                  -0.5206
+##   TimeGravityAcc-arCoeff-X,1 TimeGravityAcc-arCoeff-X,2
+## 1                    -0.4765                     0.5218
+## 2                    -0.4763                     0.5153
+##   TimeGravityAcc-arCoeff-X,3 TimeGravityAcc-arCoeff-X,4
+## 1                    -0.5659                     0.6089
+## 2                    -0.5538                     0.5916
+##   TimeGravityAcc-arCoeff-Y,1 TimeGravityAcc-arCoeff-Y,2
+## 1                    -0.2754                     0.2784
+## 2                    -0.2793                     0.2671
+##   TimeGravityAcc-arCoeff-Y,3 TimeGravityAcc-arCoeff-Y,4
+## 1                    -0.3305                     0.4012
+## 2                    -0.3031                     0.3580
+##   TimeGravityAcc-arCoeff-Z,1 TimeGravityAcc-arCoeff-Z,2
+## 1                    -0.4014                     0.4197
+## 2                    -0.4210                     0.4479
+##   TimeGravityAcc-arCoeff-Z,3 TimeGravityAcc-arCoeff-Z,4
+## 1                    -0.4369                     0.4505
+## 2                    -0.4741                     0.4970
+##   TimeGravityAcc-correlation-X,Y TimeGravityAcc-correlation-X,Z
+## 1                         0.1718                       -0.16750
+## 2                         0.2933                       -0.07417
+##   TimeGravityAcc-correlation-Y,Z TimeBodyAccJerk-mean-X
+## 1                        0.14658                0.07709
+## 2                        0.06919                0.07854
+##   TimeBodyAccJerk-mean-Y TimeBodyAccJerk-mean-Z TimeBodyAccJerk-std-X
+## 1               0.016591             -0.0091076               -0.5247
+## 2               0.007088              0.0007558               -0.5578
+##   TimeBodyAccJerk-std-Y TimeBodyAccJerk-std-Z TimeBodyAccJerk-mad-X
+## 1               -0.4704               -0.7173               -0.5184
+## 2               -0.4919               -0.7419               -0.5704
+##   TimeBodyAccJerk-mad-Y TimeBodyAccJerk-mad-Z TimeBodyAccJerk-max-X
+## 1               -0.4580               -0.6996               -0.6206
+## 2               -0.4925               -0.7368               -0.6180
+##   TimeBodyAccJerk-max-Y TimeBodyAccJerk-max-Z TimeBodyAccJerk-min-X
+## 1               -0.6596               -0.7994                0.4523
+## 2               -0.6218               -0.8093                0.4911
+##   TimeBodyAccJerk-min-Y TimeBodyAccJerk-min-Z TimeBodyAccJerk-sma
+## 1                0.5594                0.6937             -0.5382
+## 2                0.5840                0.7062             -0.5833
+##   TimeBodyAccJerk-energy-X TimeBodyAccJerk-energy-Y
+## 1                  -0.7960                  -0.7490
+## 2                  -0.7996                  -0.7437
+##   TimeBodyAccJerk-energy-Z TimeBodyAccJerk-iqr-X TimeBodyAccJerk-iqr-Y
+## 1                  -0.9239               -0.4963               -0.5573
+## 2                  -0.9300               -0.5869               -0.5997
+##   TimeBodyAccJerk-iqr-Z TimeBodyAccJerk-entropy-X
+## 1               -0.6963                   0.05013
+## 2               -0.7608                  -0.01272
+##   TimeBodyAccJerk-entropy-Y TimeBodyAccJerk-entropy-Z
+## 1                   0.03685                  -0.01408
+## 2                  -0.02610                  -0.07190
+##   TimeBodyAccJerk-arCoeff-X,1 TimeBodyAccJerk-arCoeff-X,2
+## 1                    -0.13274                      0.2265
+## 2                    -0.01149                      0.2289
+##   TimeBodyAccJerk-arCoeff-X,3 TimeBodyAccJerk-arCoeff-X,4
+## 1                      0.1296                     0.02782
+## 2                      0.1087                     0.08550
+##   TimeBodyAccJerk-arCoeff-Y,1 TimeBodyAccJerk-arCoeff-Y,2
+## 1                    -0.08707                      0.1079
+## 2                    -0.02677                      0.1292
+##   TimeBodyAccJerk-arCoeff-Y,3 TimeBodyAccJerk-arCoeff-Y,4
+## 1                      0.1632                      0.3446
+## 2                      0.2090                      0.2743
+##   TimeBodyAccJerk-arCoeff-Z,1 TimeBodyAccJerk-arCoeff-Z,2
+## 1                    0.005668                     0.10906
+## 2                   -0.003775                     0.07811
+##   TimeBodyAccJerk-arCoeff-Z,3 TimeBodyAccJerk-arCoeff-Z,4
+## 1                    0.076560                     0.04974
+## 2                    0.005821                     0.15550
+##   TimeBodyAccJerk-correlation-X,Y TimeBodyAccJerk-correlation-X,Z
+## 1                         -0.1814                        -0.10898
+## 2                         -0.2652                         0.03932
+##   TimeBodyAccJerk-correlation-Y,Z TimeBodyGyro-mean-X TimeBodyGyro-mean-Y
+## 1                          0.2089            -0.02088            -0.08807
+## 2                          0.1551            -0.05170            -0.05684
+##   TimeBodyGyro-mean-Z TimeBodyGyro-std-X TimeBodyGyro-std-Y
+## 1             0.08626            -0.6866            -0.4510
+## 2             0.08726            -0.7106            -0.7229
+##   TimeBodyGyro-std-Z TimeBodyGyro-mad-X TimeBodyGyro-mad-Y
+## 1            -0.5975            -0.7010            -0.4695
+## 2            -0.6349            -0.7145            -0.7361
+##   TimeBodyGyro-mad-Z TimeBodyGyro-max-X TimeBodyGyro-max-Y
+## 1            -0.6188            -0.6211            -0.6160
+## 2            -0.6456            -0.6342            -0.7398
+##   TimeBodyGyro-max-Z TimeBodyGyro-min-X TimeBodyGyro-min-Y
+## 1            -0.4578             0.5705             0.6110
+## 2            -0.4755             0.5973             0.7489
+##   TimeBodyGyro-min-Z TimeBodyGyro-sma TimeBodyGyro-energy-X
+## 1             0.4600          -0.4752               -0.9020
+## 2             0.5355          -0.6095               -0.9034
+##   TimeBodyGyro-energy-Y TimeBodyGyro-energy-Z TimeBodyGyro-iqr-X
+## 1               -0.7426               -0.8685            -0.7208
+## 2               -0.9248               -0.8697            -0.7118
+##   TimeBodyGyro-iqr-Y TimeBodyGyro-iqr-Z TimeBodyGyro-entropy-X
+## 1            -0.5085            -0.6856               -0.06175
+## 2            -0.7561            -0.6941               -0.18642
+##   TimeBodyGyro-entropy-Y TimeBodyGyro-entropy-Z TimeBodyGyro-arCoeff-X,1
+## 1                -0.1636                0.03865                  -0.2393
+## 2                -0.1080               -0.01566                  -0.1458
+##   TimeBodyGyro-arCoeff-X,2 TimeBodyGyro-arCoeff-X,3
+## 1                   0.1510                  0.22516
+## 2                   0.1388                  0.04734
+##   TimeBodyGyro-arCoeff-X,4 TimeBodyGyro-arCoeff-Y,1
+## 1                  -0.2121                  -0.1676
+## 2                  -0.0127                  -0.1284
+##   TimeBodyGyro-arCoeff-Y,2 TimeBodyGyro-arCoeff-Y,3
+## 1                   0.1670                 -0.07667
+## 2                   0.1394                 -0.05407
+##   TimeBodyGyro-arCoeff-Y,4 TimeBodyGyro-arCoeff-Z,1
+## 1                   0.1119                -0.076887
+## 2                   0.1115                 0.002024
+##   TimeBodyGyro-arCoeff-Z,2 TimeBodyGyro-arCoeff-Z,3
+## 1                  0.07282                 -0.04232
+## 2                  0.04472                 -0.07335
+##   TimeBodyGyro-arCoeff-Z,4 TimeBodyGyro-correlation-X,Y
+## 1                   0.1786                      -0.0349
+## 2                   0.1734                      -0.1176
+##   TimeBodyGyro-correlation-X,Z TimeBodyGyro-correlation-Y,Z
+## 1                     -0.04359                      -0.1050
+## 2                      0.17754                      -0.1691
+##   TimeBodyGyroJerk-mean-X TimeBodyGyroJerk-mean-Y TimeBodyGyroJerk-mean-Z
+## 1                -0.09711                -0.04172                -0.04714
+## 2                -0.08756                -0.04340                -0.05575
+##   TimeBodyGyroJerk-std-X TimeBodyGyroJerk-std-Y TimeBodyGyroJerk-std-Z
+## 1                -0.6378                -0.6345                -0.6646
+## 2                -0.6717                -0.7836                -0.6746
+##   TimeBodyGyroJerk-mad-X TimeBodyGyroJerk-mad-Y TimeBodyGyroJerk-mad-Z
+## 1                -0.6426                -0.6475                -0.6667
+## 2                -0.6879                -0.8019                -0.6914
+##   TimeBodyGyroJerk-max-X TimeBodyGyroJerk-max-Y TimeBodyGyroJerk-max-Z
+## 1                -0.6645                -0.7007                -0.6566
+## 2                -0.6690                -0.7990                -0.6396
+##   TimeBodyGyroJerk-min-X TimeBodyGyroJerk-min-Y TimeBodyGyroJerk-min-Z
+## 1                 0.6865                 0.6951                 0.7602
+## 2                 0.6606                 0.8063                 0.7548
+##   TimeBodyGyroJerk-sma TimeBodyGyroJerk-energy-X TimeBodyGyroJerk-energy-Y
+## 1              -0.6497                   -0.8790                   -0.8769
+## 2              -0.7453                   -0.8897                   -0.9503
+##   TimeBodyGyroJerk-energy-Z TimeBodyGyroJerk-iqr-X TimeBodyGyroJerk-iqr-Y
+## 1                   -0.8984                -0.6758                -0.6624
+## 2                   -0.8930                -0.7240                -0.8231
+##   TimeBodyGyroJerk-iqr-Z TimeBodyGyroJerk-entropy-X
+## 1                -0.6855                    0.05177
+## 2                -0.7284                    0.01667
+##   TimeBodyGyroJerk-entropy-Y TimeBodyGyroJerk-entropy-Z
+## 1                    0.07772                    0.08914
+## 2                    0.06239                    0.05709
+##   TimeBodyGyroJerk-arCoeff-X,1 TimeBodyGyroJerk-arCoeff-X,2
+## 1                    -0.080400                      0.02876
+## 2                    -0.005621                      0.08340
+##   TimeBodyGyroJerk-arCoeff-X,3 TimeBodyGyroJerk-arCoeff-X,4
+## 1                       0.2424                       0.1955
+## 2                       0.1778                       0.1044
+##   TimeBodyGyroJerk-arCoeff-Y,1 TimeBodyGyroJerk-arCoeff-Y,2
+## 1                     -0.10608                       0.2323
+## 2                     -0.07179                       0.2214
+##   TimeBodyGyroJerk-arCoeff-Y,3 TimeBodyGyroJerk-arCoeff-Y,4
+## 1                       0.1361                      0.02807
+## 2                       0.1484                      0.04429
+##   TimeBodyGyroJerk-arCoeff-Z,1 TimeBodyGyroJerk-arCoeff-Z,2
+## 1                     -0.02396                      0.07955
+## 2                      0.07913                      0.08919
+##   TimeBodyGyroJerk-arCoeff-Z,3 TimeBodyGyroJerk-arCoeff-Z,4
+## 1                      0.06098                      0.02711
+## 2                      0.12990                     -0.05746
+##   TimeBodyGyroJerk-correlation-X,Y TimeBodyGyroJerk-correlation-X,Z
+## 1                           0.2462                          -0.1672
+## 2                           0.1924                           0.1116
+##   TimeBodyGyroJerk-correlation-Y,Z TimeBodyAccMag-mean TimeBodyAccMag-std
+## 1                          -0.1400             -0.4536            -0.4971
+## 2                          -0.2393             -0.5353            -0.5528
+##   TimeBodyAccMag-mad TimeBodyAccMag-max TimeBodyAccMag-min
+## 1            -0.5479            -0.4821            -0.8337
+## 2            -0.6272            -0.4913            -0.8109
+##   TimeBodyAccMag-sma TimeBodyAccMag-energy TimeBodyAccMag-iqr
+## 1            -0.4536               -0.7414            -0.6032
+## 2            -0.5353               -0.7743            -0.7328
+##   TimeBodyAccMag-entropy TimeBodyAccMag-arCoeff1 TimeBodyAccMag-arCoeff2
+## 1                 0.2498                 0.01075                -0.04456
+## 2                 0.1410                 0.06352                -0.07698
+##   TimeBodyAccMag-arCoeff3 TimeBodyAccMag-arCoeff4 TimeGravityAccMag-mean
+## 1                 0.08544                -0.04919                -0.4536
+## 2                 0.09047                -0.05709                -0.5353
+##   TimeGravityAccMag-std TimeGravityAccMag-mad TimeGravityAccMag-max
+## 1               -0.4971               -0.5479               -0.4821
+## 2               -0.5528               -0.6272               -0.4913
+##   TimeGravityAccMag-min TimeGravityAccMag-sma TimeGravityAccMag-energy
+## 1               -0.8337               -0.4536                  -0.7414
+## 2               -0.8109               -0.5353                  -0.7743
+##   TimeGravityAccMag-iqr TimeGravityAccMag-entropy
+## 1               -0.6032                    0.2498
+## 2               -0.7328                    0.1410
+##   TimeGravityAccMag-arCoeff1 TimeGravityAccMag-arCoeff2
+## 1                    0.01075                   -0.04456
+## 2                    0.06352                   -0.07698
+##   TimeGravityAccMag-arCoeff3 TimeGravityAccMag-arCoeff4
+## 1                    0.08544                   -0.04919
+## 2                    0.09047                   -0.05709
+##   TimeBodyAccJerkMag-mean TimeBodyAccJerkMag-std TimeBodyAccJerkMag-mad
+## 1                 -0.5454                -0.5159                -0.5434
+## 2                 -0.5878                -0.5121                -0.5443
+##   TimeBodyAccJerkMag-max TimeBodyAccJerkMag-min TimeBodyAccJerkMag-sma
+## 1                -0.5255                -0.7197                -0.5454
+## 2                -0.5253                -0.7718                -0.5878
+##   TimeBodyAccJerkMag-energy TimeBodyAccJerkMag-iqr
+## 1                   -0.8009                -0.6147
+## 2                   -0.8040                -0.6260
+##   TimeBodyAccJerkMag-entropy TimeBodyAccJerkMag-arCoeff1
+## 1                    0.08420                      0.1247
+## 2                    0.01084                      0.1466
+##   TimeBodyAccJerkMag-arCoeff2 TimeBodyAccJerkMag-arCoeff3
+## 1                     -0.0878                     -0.1410
+## 2                     -0.1164                     -0.1534
+##   TimeBodyAccJerkMag-arCoeff4 TimeBodyGyroMag-mean TimeBodyGyroMag-std
+## 1                     0.03593              -0.4754             -0.4998
+## 2                     0.06889              -0.6148             -0.6806
+##   TimeBodyGyroMag-mad TimeBodyGyroMag-max TimeBodyGyroMag-min
+## 1             -0.4396             -0.5807             -0.6926
+## 2             -0.6543             -0.6984             -0.7351
+##   TimeBodyGyroMag-sma TimeBodyGyroMag-energy TimeBodyGyroMag-iqr
+## 1             -0.4754                -0.7581             -0.4528
+## 2             -0.6148                -0.8572             -0.6791
+##   TimeBodyGyroMag-entropy TimeBodyGyroMag-arCoeff1
+## 1                  0.1572                  0.06983
+## 2                  0.2890                  0.09453
+##   TimeBodyGyroMag-arCoeff2 TimeBodyGyroMag-arCoeff3
+## 1                  -0.1346                   0.1439
+## 2                  -0.1666                   0.1444
+##   TimeBodyGyroMag-arCoeff4 TimeBodyGyroJerkMag-mean
+## 1                 -0.11713                  -0.6395
+## 2                 -0.07668                  -0.7466
+##   TimeBodyGyroJerkMag-std TimeBodyGyroJerkMag-mad TimeBodyGyroJerkMag-max
+## 1                 -0.6521                 -0.6755                 -0.6513
+## 2                 -0.7401                 -0.7600                 -0.7485
+##   TimeBodyGyroJerkMag-min TimeBodyGyroJerkMag-sma
+## 1                 -0.7286                 -0.6395
+## 2                 -0.7985                 -0.7466
+##   TimeBodyGyroJerkMag-energy TimeBodyGyroJerkMag-iqr
+## 1                    -0.8798                 -0.6873
+## 2                    -0.9298                 -0.7866
+##   TimeBodyGyroJerkMag-entropy TimeBodyGyroJerkMag-arCoeff1
+## 1                      0.2339                       0.3389
+## 2                      0.1675                       0.3447
+##   TimeBodyGyroJerkMag-arCoeff2 TimeBodyGyroJerkMag-arCoeff3
+## 1                      -0.2451                     -0.06710
+## 2                      -0.3503                     -0.02389
+##   TimeBodyGyroJerkMag-arCoeff4 FreqBodyAcc-mean-X FreqBodyAcc-mean-Y
+## 1                    -0.128116            -0.5319            -0.4064
+## 2                    -0.007276            -0.5738            -0.4326
+##   FreqBodyAcc-mean-Z FreqBodyAcc-std-X FreqBodyAcc-std-Y FreqBodyAcc-std-Z
+## 1            -0.5964           -0.5531           -0.3902           -0.4986
+## 2            -0.6301           -0.6198           -0.4647           -0.6007
+##   FreqBodyAcc-mad-X FreqBodyAcc-mad-Y FreqBodyAcc-mad-Z FreqBodyAcc-max-X
+## 1           -0.5089           -0.3955           -0.5583           -0.6313
+## 2           -0.5726           -0.4415           -0.5983           -0.6803
+##   FreqBodyAcc-max-Y FreqBodyAcc-max-Z FreqBodyAcc-min-X FreqBodyAcc-min-Y
+## 1           -0.5461           -0.4674           -0.8199           -0.8401
+## 2           -0.6141           -0.6385           -0.8593           -0.8512
+##   FreqBodyAcc-min-Z FreqBodyAcc-sma FreqBodyAcc-energy-X
+## 1           -0.8884         -0.4454              -0.8188
+## 2           -0.9093         -0.4862              -0.8406
+##   FreqBodyAcc-energy-Y FreqBodyAcc-energy-Z FreqBodyAcc-iqr-X
+## 1              -0.6695              -0.7940           -0.5194
+## 2              -0.6882              -0.8308           -0.5422
+##   FreqBodyAcc-iqr-Y FreqBodyAcc-iqr-Z FreqBodyAcc-entropy-X
+## 1           -0.5546           -0.7021              -0.03012
+## 2           -0.5346           -0.7134              -0.09707
+##   FreqBodyAcc-entropy-Y FreqBodyAcc-entropy-Z FreqBodyAcc-maxInds-X
+## 1              -0.03378               -0.1010               -0.7620
+## 2              -0.09241               -0.1509               -0.7586
+##   FreqBodyAcc-maxInds-Y FreqBodyAcc-maxInds-Z FreqBodyAcc-meanFreq-X
+## 1               -0.7816               -0.9029                -0.1806
+## 2               -0.8245               -0.8459                -0.1068
+##   FreqBodyAcc-meanFreq-Y FreqBodyAcc-meanFreq-Z FreqBodyAcc-skewness-X
+## 1                0.05763                0.05837                -0.1882
+## 2                0.10573                0.08721                -0.2185
+##   FreqBodyAcc-kurtosis-X FreqBodyAcc-skewness-Y FreqBodyAcc-kurtosis-Y
+## 1                -0.5257                -0.2044                -0.5070
+## 2                -0.5466                -0.3293                -0.6363
+##   FreqBodyAcc-skewness-Z FreqBodyAcc-kurtosis-Z
+## 1                -0.1820                -0.4072
+## 2                -0.3457                -0.5902
+##   FreqBodyAcc-bandsEnergy-1,8 FreqBodyAcc-bandsEnergy-9,16
+## 1                     -0.8249                      -0.8866
+## 2                     -0.8499                      -0.8931
+##   FreqBodyAcc-bandsEnergy-17,24 FreqBodyAcc-bandsEnergy-25,32
+## 1                       -0.7167                       -0.8207
+## 2                       -0.7681                       -0.7838
+##   FreqBodyAcc-bandsEnergy-33,40 FreqBodyAcc-bandsEnergy-41,48
+## 1                       -0.9017                       -0.8919
+## 2                       -0.8587                       -0.8736
+##   FreqBodyAcc-bandsEnergy-49,56 FreqBodyAcc-bandsEnergy-57,64
+## 1                       -0.9291                       -0.9427
+## 2                       -0.9315                       -0.9640
+##   FreqBodyAcc-bandsEnergy-1,16 FreqBodyAcc-bandsEnergy-17,32
+## 1                      -0.8268                       -0.7034
+## 2                      -0.8487                       -0.7365
+##   FreqBodyAcc-bandsEnergy-33,48 FreqBodyAcc-bandsEnergy-49,64
+## 1                       -0.8980                       -0.9336
+## 2                       -0.8643                       -0.9424
+##   FreqBodyAcc-bandsEnergy-1,24 FreqBodyAcc-bandsEnergy-25,48
+## 1                       -0.819                       -0.8230
+## 2                       -0.843                       -0.7804
+##   FreqBodyAcc-bandsEnergy-1,8.1 FreqBodyAcc-bandsEnergy-9,16.1
+## 1                       -0.7491                        -0.7461
+## 2                       -0.7381                        -0.8312
+##   FreqBodyAcc-bandsEnergy-17,24.1 FreqBodyAcc-bandsEnergy-25,32.1
+## 1                         -0.8162                         -0.8808
+## 2                         -0.7697                         -0.7925
+##   FreqBodyAcc-bandsEnergy-33,40.1 FreqBodyAcc-bandsEnergy-41,48.1
+## 1                         -0.8556                         -0.8433
+## 2                         -0.8368                         -0.8257
+##   FreqBodyAcc-bandsEnergy-49,56.1 FreqBodyAcc-bandsEnergy-57,64.1
+## 1                         -0.8534                         -0.9264
+## 2                         -0.8738                         -0.9434
+##   FreqBodyAcc-bandsEnergy-1,16.1 FreqBodyAcc-bandsEnergy-17,32.1
+## 1                        -0.6772                         -0.7879
+## 2                        -0.7125                         -0.7174
+##   FreqBodyAcc-bandsEnergy-33,48.1 FreqBodyAcc-bandsEnergy-49,64.1
+## 1                         -0.8344                         -0.8794
+## 2                         -0.8139                         -0.8991
+##   FreqBodyAcc-bandsEnergy-1,24.1 FreqBodyAcc-bandsEnergy-25,48.1
+## 1                        -0.6726                         -0.8603
+## 2                        -0.6967                         -0.7886
+##   FreqBodyAcc-bandsEnergy-1,8.2 FreqBodyAcc-bandsEnergy-9,16.2
+## 1                       -0.7905                        -0.9355
+## 2                       -0.8462                        -0.8946
+##   FreqBodyAcc-bandsEnergy-17,24.2 FreqBodyAcc-bandsEnergy-25,32.2
+## 1                         -0.9049                         -0.9460
+## 2                         -0.9283                         -0.9662
+##   FreqBodyAcc-bandsEnergy-33,40.2 FreqBodyAcc-bandsEnergy-41,48.2
+## 1                         -0.9619                         -0.9229
+## 2                         -0.9608                         -0.9309
+##   FreqBodyAcc-bandsEnergy-49,56.2 FreqBodyAcc-bandsEnergy-57,64.2
+## 1                         -0.9249                         -0.9444
+## 2                         -0.9366                         -0.9556
+##   FreqBodyAcc-bandsEnergy-1,16.2 FreqBodyAcc-bandsEnergy-17,32.2
+## 1                        -0.8117                         -0.9198
+## 2                        -0.8431                         -0.9421
+##   FreqBodyAcc-bandsEnergy-33,48.2 FreqBodyAcc-bandsEnergy-49,64.2
+## 1                         -0.9491                         -0.9302
+## 2                         -0.9503                         -0.9418
+##   FreqBodyAcc-bandsEnergy-1,24.2 FreqBodyAcc-bandsEnergy-25,48.2
+## 1                        -0.7987                         -0.9469
+## 2                        -0.8338                         -0.9617
+##   FreqBodyAccJerk-mean-X FreqBodyAccJerk-mean-Y FreqBodyAccJerk-mean-Z
+## 1                -0.5473                -0.5073                -0.6953
+## 2                -0.5617                -0.5089                -0.7157
+##   FreqBodyAccJerk-std-X FreqBodyAccJerk-std-Y FreqBodyAccJerk-std-Z
+## 1               -0.5440               -0.4663               -0.7379
+## 2               -0.5951               -0.5091               -0.7671
+##   FreqBodyAccJerk-mad-X FreqBodyAccJerk-mad-Y FreqBodyAccJerk-mad-Z
+## 1               -0.4542               -0.4924               -0.7184
+## 2               -0.4985               -0.5087               -0.7463
+##   FreqBodyAccJerk-max-X FreqBodyAccJerk-max-Y FreqBodyAccJerk-max-Z
+## 1               -0.6345               -0.5423               -0.7623
+## 2               -0.6929               -0.6113               -0.7897
+##   FreqBodyAccJerk-min-X FreqBodyAccJerk-min-Y FreqBodyAccJerk-min-Z
+## 1               -0.8607               -0.8324               -0.8664
+## 2               -0.8542               -0.8311               -0.8746
+##   FreqBodyAccJerk-sma FreqBodyAccJerk-energy-X FreqBodyAccJerk-energy-Y
+## 1             -0.5103                  -0.7957                  -0.7491
+## 2             -0.5253                  -0.7993                  -0.7438
+##   FreqBodyAccJerk-energy-Z FreqBodyAccJerk-iqr-X FreqBodyAccJerk-iqr-Y
+## 1                   -0.924               -0.5035               -0.6281
+## 2                   -0.930               -0.5087               -0.6145
+##   FreqBodyAccJerk-iqr-Z FreqBodyAccJerk-entropy-X
+## 1               -0.7286                  -0.06915
+## 2               -0.7478                  -0.14777
+##   FreqBodyAccJerk-entropy-Y FreqBodyAccJerk-entropy-Z
+## 1                  -0.07218                   -0.2280
+## 2                  -0.13968                   -0.3045
+##   FreqBodyAccJerk-maxInds-X FreqBodyAccJerk-maxInds-Y
+## 1                   -0.3363                   -0.4080
+## 2                   -0.2494                   -0.3266
+##   FreqBodyAccJerk-maxInds-Z FreqBodyAccJerk-meanFreq-X
+## 1                   -0.3006                    -0.0488
+## 2                   -0.2833                     0.0868
+##   FreqBodyAccJerk-meanFreq-Y FreqBodyAccJerk-meanFreq-Z
+## 1                    -0.2153                   -0.09645
+## 2                    -0.1398                   -0.09427
+##   FreqBodyAccJerk-skewness-X FreqBodyAccJerk-kurtosis-X
+## 1                    -0.3260                    -0.7347
+## 2                    -0.4216                    -0.7966
+##   FreqBodyAccJerk-skewness-Y FreqBodyAccJerk-kurtosis-Y
+## 1                    -0.3541                    -0.7871
+## 2                    -0.4580                    -0.8603
+##   FreqBodyAccJerk-skewness-Z FreqBodyAccJerk-kurtosis-Z
+## 1                    -0.4611                    -0.8048
+## 2                    -0.5095                    -0.8302
+##   FreqBodyAccJerk-bandsEnergy-1,8 FreqBodyAccJerk-bandsEnergy-9,16
+## 1                         -0.8694                          -0.8818
+## 2                         -0.8933                          -0.8888
+##   FreqBodyAccJerk-bandsEnergy-17,24 FreqBodyAccJerk-bandsEnergy-25,32
+## 1                           -0.7395                           -0.8288
+## 2                           -0.7802                           -0.7756
+##   FreqBodyAccJerk-bandsEnergy-33,40 FreqBodyAccJerk-bandsEnergy-41,48
+## 1                           -0.9152                           -0.8849
+## 2                           -0.8577                           -0.8453
+##   FreqBodyAccJerk-bandsEnergy-49,56 FreqBodyAccJerk-bandsEnergy-57,64
+## 1                           -0.9268                           -0.9837
+## 2                           -0.9088                           -0.9804
+##   FreqBodyAccJerk-bandsEnergy-1,16 FreqBodyAccJerk-bandsEnergy-17,32
+## 1                          -0.8659                           -0.7180
+## 2                          -0.8810                           -0.7268
+##   FreqBodyAccJerk-bandsEnergy-33,48 FreqBodyAccJerk-bandsEnergy-49,64
+## 1                           -0.8957                           -0.9249
+## 2                           -0.8408                           -0.9066
+##   FreqBodyAccJerk-bandsEnergy-1,24 FreqBodyAccJerk-bandsEnergy-25,48
+## 1                          -0.7926                           -0.8035
+## 2                          -0.8203                           -0.7273
+##   FreqBodyAccJerk-bandsEnergy-1,8.1 FreqBodyAccJerk-bandsEnergy-9,16.1
+## 1                           -0.8061                            -0.7674
+## 2                           -0.7909                            -0.8529
+##   FreqBodyAccJerk-bandsEnergy-17,24.1 FreqBodyAccJerk-bandsEnergy-25,32.1
+## 1                             -0.7882                             -0.8877
+## 2                             -0.7162                             -0.8028
+##   FreqBodyAccJerk-bandsEnergy-33,40.1 FreqBodyAccJerk-bandsEnergy-41,48.1
+## 1                             -0.8834                             -0.8407
+## 2                             -0.8610                             -0.8104
+##   FreqBodyAccJerk-bandsEnergy-49,56.1 FreqBodyAccJerk-bandsEnergy-57,64.1
+## 1                             -0.8886                             -0.9657
+## 2                             -0.8945                             -0.9657
+##   FreqBodyAccJerk-bandsEnergy-1,16.1 FreqBodyAccJerk-bandsEnergy-17,32.1
+## 1                            -0.7434                             -0.7925
+## 2                            -0.8173                             -0.6999
+##   FreqBodyAccJerk-bandsEnergy-33,48.1 FreqBodyAccJerk-bandsEnergy-49,64.1
+## 1                             -0.8372                             -0.8984
+## 2                             -0.8060                             -0.9035
+##   FreqBodyAccJerk-bandsEnergy-1,24.1 FreqBodyAccJerk-bandsEnergy-25,48.1
+## 1                            -0.7201                             -0.8667
+## 2                            -0.7422                             -0.8014
+##   FreqBodyAccJerk-bandsEnergy-1,8.2 FreqBodyAccJerk-bandsEnergy-9,16.2
+## 1                           -0.9195                            -0.9311
+## 2                           -0.8855                            -0.8984
+##   FreqBodyAccJerk-bandsEnergy-17,24.2 FreqBodyAccJerk-bandsEnergy-25,32.2
+## 1                             -0.9071                             -0.9480
+## 2                             -0.9310                             -0.9688
+##   FreqBodyAccJerk-bandsEnergy-33,40.2 FreqBodyAccJerk-bandsEnergy-41,48.2
+## 1                             -0.9674                             -0.9290
+## 2                             -0.9651                             -0.9341
+##   FreqBodyAccJerk-bandsEnergy-49,56.2 FreqBodyAccJerk-bandsEnergy-57,64.2
+## 1                             -0.9131                             -0.9663
+## 2                             -0.9261                             -0.9735
+##   FreqBodyAccJerk-bandsEnergy-1,16.2 FreqBodyAccJerk-bandsEnergy-17,32.2
+## 1                            -0.9125                             -0.9271
+## 2                            -0.8724                             -0.9495
+##   FreqBodyAccJerk-bandsEnergy-33,48.2 FreqBodyAccJerk-bandsEnergy-49,64.2
+## 1                             -0.9536                             -0.9137
+## 2                             -0.9534                             -0.9268
+##   FreqBodyAccJerk-bandsEnergy-1,24.2 FreqBodyAccJerk-bandsEnergy-25,48.2
+## 1                            -0.8976                             -0.9502
+## 2                            -0.8962                             -0.9628
+##   FreqBodyGyro-mean-X FreqBodyGyro-mean-Y FreqBodyGyro-mean-Z
+## 1             -0.6232             -0.5053             -0.5535
+## 2             -0.6387             -0.7221             -0.6016
+##   FreqBodyGyro-std-X FreqBodyGyro-std-Y FreqBodyGyro-std-Z
+## 1            -0.7083            -0.4298            -0.6505
+## 2            -0.7346            -0.7272            -0.6831
+##   FreqBodyGyro-mad-X FreqBodyGyro-mad-Y FreqBodyGyro-mad-Z
+## 1            -0.6391            -0.5250            -0.5653
+## 2            -0.6768            -0.7463            -0.6342
+##   FreqBodyGyro-max-X FreqBodyGyro-max-Y FreqBodyGyro-max-Z
+## 1            -0.7101            -0.5021            -0.7549
+## 2            -0.7274            -0.7854            -0.7488
+##   FreqBodyGyro-min-X FreqBodyGyro-min-Y FreqBodyGyro-min-Z
+## 1            -0.9208            -0.8343            -0.8832
+## 2            -0.9308            -0.9151            -0.8971
+##   FreqBodyGyro-sma FreqBodyGyro-energy-X FreqBodyGyro-energy-Y
+## 1          -0.5283               -0.9138               -0.7425
+## 2          -0.6450               -0.9155               -0.9277
+##   FreqBodyGyro-energy-Z FreqBodyGyro-iqr-X FreqBodyGyro-iqr-Y
+## 1               -0.8626            -0.6437            -0.5890
+## 2               -0.8701            -0.6452            -0.7532
+##   FreqBodyGyro-iqr-Z FreqBodyGyro-entropy-X FreqBodyGyro-entropy-Y
+## 1            -0.6036              -0.008774               0.086820
+## 2            -0.6199              -0.040264              -0.004849
+##   FreqBodyGyro-entropy-Z FreqBodyGyro-maxInds-X FreqBodyGyro-maxInds-Y
+## 1               0.006692                -0.7506                -0.8663
+## 2              -0.034005                -0.8859                -0.8569
+##   FreqBodyGyro-maxInds-Z FreqBodyGyro-meanFreq-X FreqBodyGyro-meanFreq-Y
+## 1                -0.8144               -0.032032                -0.09015
+## 2                -0.8404               -0.005765                -0.07022
+##   FreqBodyGyro-meanFreq-Z FreqBodyGyro-skewness-X FreqBodyGyro-kurtosis-X
+## 1                -0.01801                 -0.2061                 -0.5144
+## 2                 0.05136                 -0.2296                 -0.5402
+##   FreqBodyGyro-skewness-Y FreqBodyGyro-kurtosis-Y FreqBodyGyro-skewness-Z
+## 1                 -0.1160                 -0.4554                 -0.2587
+## 2                 -0.2349                 -0.5885                 -0.1829
+##   FreqBodyGyro-kurtosis-Z FreqBodyGyro-bandsEnergy-1,8
+## 1                 -0.5819                      -0.9457
+## 2                 -0.4754                      -0.9318
+##   FreqBodyGyro-bandsEnergy-9,16 FreqBodyGyro-bandsEnergy-17,24
+## 1                       -0.8010                        -0.8834
+## 2                       -0.9132                        -0.8939
+##   FreqBodyGyro-bandsEnergy-25,32 FreqBodyGyro-bandsEnergy-33,40
+## 1                        -0.9701                        -0.9608
+## 2                        -0.9066                        -0.9225
+##   FreqBodyGyro-bandsEnergy-41,48 FreqBodyGyro-bandsEnergy-49,56
+## 1                        -0.9518                        -0.9606
+## 2                        -0.9381                        -0.9588
+##   FreqBodyGyro-bandsEnergy-57,64 FreqBodyGyro-bandsEnergy-1,16
+## 1                        -0.9718                       -0.9199
+## 2                        -0.9773                       -0.9232
+##   FreqBodyGyro-bandsEnergy-17,32 FreqBodyGyro-bandsEnergy-33,48
+## 1                        -0.8940                        -0.9532
+## 2                        -0.8765                        -0.9210
+##   FreqBodyGyro-bandsEnergy-49,64 FreqBodyGyro-bandsEnergy-1,24
+## 1                        -0.9656                       -0.9149
+## 2                        -0.9670                       -0.9187
+##   FreqBodyGyro-bandsEnergy-25,48 FreqBodyGyro-bandsEnergy-1,8.1
+## 1                        -0.9649                        -0.6735
+## 2                        -0.9097                        -0.9267
+##   FreqBodyGyro-bandsEnergy-9,16.1 FreqBodyGyro-bandsEnergy-17,24.1
+## 1                         -0.9595                          -0.9133
+## 2                         -0.9791                          -0.9704
+##   FreqBodyGyro-bandsEnergy-25,32.1 FreqBodyGyro-bandsEnergy-33,40.1
+## 1                          -0.9179                          -0.9443
+## 2                          -0.9617                          -0.9738
+##   FreqBodyGyro-bandsEnergy-41,48.1 FreqBodyGyro-bandsEnergy-49,56.1
+## 1                          -0.9020                          -0.8973
+## 2                          -0.9581                          -0.9532
+##   FreqBodyGyro-bandsEnergy-57,64.1 FreqBodyGyro-bandsEnergy-1,16.1
+## 1                          -0.9484                         -0.7538
+## 2                          -0.9853                         -0.9371
+##   FreqBodyGyro-bandsEnergy-17,32.1 FreqBodyGyro-bandsEnergy-33,48.1
+## 1                          -0.8940                          -0.9351
+## 2                          -0.9607                          -0.9703
+##   FreqBodyGyro-bandsEnergy-49,64.1 FreqBodyGyro-bandsEnergy-1,24.1
+## 1                          -0.9055                         -0.7298
+## 2                          -0.9607                         -0.9273
+##   FreqBodyGyro-bandsEnergy-25,48.1 FreqBodyGyro-bandsEnergy-1,8.2
+## 1                          -0.9169                        -0.9008
+## 2                          -0.9614                        -0.9023
+##   FreqBodyGyro-bandsEnergy-9,16.2 FreqBodyGyro-bandsEnergy-17,24.2
+## 1                         -0.9142                          -0.9214
+## 2                         -0.9458                          -0.9129
+##   FreqBodyGyro-bandsEnergy-25,32.2 FreqBodyGyro-bandsEnergy-33,40.2
+## 1                          -0.9580                          -0.9565
+## 2                          -0.9135                          -0.9483
+##   FreqBodyGyro-bandsEnergy-41,48.2 FreqBodyGyro-bandsEnergy-49,56.2
+## 1                          -0.9478                          -0.9449
+## 2                          -0.9407                          -0.9334
+##   FreqBodyGyro-bandsEnergy-57,64.2 FreqBodyGyro-bandsEnergy-1,16.2
+## 1                          -0.9695                         -0.8769
+## 2                          -0.9751                         -0.8889
+##   FreqBodyGyro-bandsEnergy-17,32.2 FreqBodyGyro-bandsEnergy-33,48.2
+## 1                          -0.9047                          -0.9540
+## 2                          -0.8751                          -0.9461
+##   FreqBodyGyro-bandsEnergy-49,64.2 FreqBodyGyro-bandsEnergy-1,24.2
+## 1                          -0.9556                         -0.8669
+## 2                          -0.9515                         -0.8777
+##   FreqBodyGyro-bandsEnergy-25,48.2 FreqBodyAccMag-mean FreqBodyAccMag-std
+## 1                          -0.9568             -0.4784            -0.5897
+## 2                          -0.9236             -0.5146            -0.6467
+##   FreqBodyAccMag-mad FreqBodyAccMag-max FreqBodyAccMag-min
+## 1            -0.5103            -0.7117            -0.8466
+## 2            -0.5679            -0.7542            -0.8437
+##   FreqBodyAccMag-sma FreqBodyAccMag-energy FreqBodyAccMag-iqr
+## 1            -0.4784               -0.7900            -0.6277
+## 2            -0.5146               -0.7962            -0.6524
+##   FreqBodyAccMag-entropy FreqBodyAccMag-maxInds FreqBodyAccMag-meanFreq
+## 1               -0.04221                -0.7382                  0.1421
+## 2               -0.12902                -0.7294                  0.1922
+##   FreqBodyAccMag-skewness FreqBodyAccMag-kurtosis
+## 1                 -0.4199                 -0.6887
+## 2                 -0.4122                 -0.6856
+##   FreqBodyBodyAccJerkMag-mean FreqBodyBodyAccJerkMag-std
+## 1                     -0.4991                    -0.5418
+## 2                     -0.5097                    -0.5188
+##   FreqBodyBodyAccJerkMag-mad FreqBodyBodyAccJerkMag-max
+## 1                    -0.4987                    -0.6114
+## 2                    -0.4960                    -0.5735
+##   FreqBodyBodyAccJerkMag-min FreqBodyBodyAccJerkMag-sma
+## 1                    -0.7276                    -0.4991
+## 2                    -0.7536                    -0.5097
+##   FreqBodyBodyAccJerkMag-energy FreqBodyBodyAccJerkMag-iqr
+## 1                       -0.7860                    -0.5757
+## 2                       -0.7573                    -0.5936
+##   FreqBodyBodyAccJerkMag-entropy FreqBodyBodyAccJerkMag-maxInds
+## 1                        -0.1669                        -0.8708
+## 2                        -0.2267                        -0.8699
+##   FreqBodyBodyAccJerkMag-meanFreq FreqBodyBodyAccJerkMag-skewness
+## 1                          0.2001                         -0.3199
+## 2                          0.1931                         -0.2790
+##   FreqBodyBodyAccJerkMag-kurtosis FreqBodyBodyGyroMag-mean
+## 1                         -0.6379                  -0.5350
+## 2                         -0.5931                  -0.6997
+##   FreqBodyBodyGyroMag-std FreqBodyBodyGyroMag-mad FreqBodyBodyGyroMag-max
+## 1                 -0.5666                 -0.5430                 -0.5934
+## 2                 -0.7253                 -0.7083                 -0.7562
+##   FreqBodyBodyGyroMag-min FreqBodyBodyGyroMag-sma
+## 1                 -0.8010                 -0.5350
+## 2                 -0.8784                 -0.6997
+##   FreqBodyBodyGyroMag-energy FreqBodyBodyGyroMag-iqr
+## 1                    -0.7949                 -0.5852
+## 2                    -0.9018                 -0.7418
+##   FreqBodyBodyGyroMag-entropy FreqBodyBodyGyroMag-maxInds
+## 1                     0.07823                     -0.8744
+## 2                    -0.04987                     -0.8523
+##   FreqBodyBodyGyroMag-meanFreq FreqBodyBodyGyroMag-skewness
+## 1                      0.06493                      -0.2058
+## 2                      0.04713                      -0.3047
+##   FreqBodyBodyGyroMag-kurtosis FreqBodyBodyGyroJerkMag-mean
+## 1                      -0.5063                      -0.6460
+## 2                      -0.6060                      -0.7516
+##   FreqBodyBodyGyroJerkMag-std FreqBodyBodyGyroJerkMag-mad
+## 1                     -0.6858                     -0.6497
+## 2                     -0.7442                     -0.7316
+##   FreqBodyBodyGyroJerkMag-max FreqBodyBodyGyroJerkMag-min
+## 1                     -0.7146                     -0.7830
+## 2                     -0.7615                     -0.8632
+##   FreqBodyBodyGyroJerkMag-sma FreqBodyBodyGyroJerkMag-energy
+## 1                     -0.6460                        -0.8886
+## 2                     -0.7516                        -0.9271
+##   FreqBodyBodyGyroJerkMag-iqr FreqBodyBodyGyroJerkMag-entropy
+## 1                     -0.6348                        -0.08803
+## 2                     -0.7542                        -0.22806
+##   FreqBodyBodyGyroJerkMag-maxInds FreqBodyBodyGyroJerkMag-meanFreq
+## 1                         -0.8855                           0.1980
+## 2                         -0.9082                           0.1246
+##   FreqBodyBodyGyroJerkMag-skewness FreqBodyBodyGyroJerkMag-kurtosis
+## 1                          -0.3469                          -0.6562
+## 2                          -0.2442                          -0.5785
+##   angle(tBodyAccMean,gravity) angle(tBodyAccJerkMean),gravityMean)
+## 1                    0.037608                             0.009018
+## 2                    0.009872                             0.014045
+##   angle(tBodyGyroMean,gravityMean) angle(tBodyGyroJerkMean,gravityMean)
+## 1                         -0.01345                             -0.00163
+## 2                          0.07459                             -0.03729
+##   angle(X,gravityMean) angle(Y,gravityMean) angle(Z,gravityMean)
+## 1              -0.5358               0.1228             -0.03908
+## 2              -0.4345               0.1723             -0.07887
+</code></pre>
+
+<pre><code class="r">
+## From:
+## http://stat.ethz.ch/R-manual/R-patched/library/stats/html/ftable.html
+## Start with a data frame.
+x &lt;- ftable(mtcars[c(&quot;cyl&quot;, &quot;vs&quot;, &quot;am&quot;, &quot;gear&quot;)])
+x
+</code></pre>
+
+<pre><code>##           gear  3  4  5
+## cyl vs am              
+## 4   0  0        0  0  0
+##        1        0  0  1
+##     1  0        1  2  0
+##        1        0  6  1
+## 6   0  0        0  0  0
+##        1        0  2  1
+##     1  0        2  2  0
+##        1        0  0  0
+## 8   0  0       12  0  0
+##        1        0  0  2
+##     1  0        0  0  0
+##        1        0  0  0
+</code></pre>
+
+<pre><code class="r">ftable(x, row.vars = c(2, 4))
+</code></pre>
+
+<pre><code>##         cyl  4     6     8   
+##         am   0  1  0  1  0  1
+## vs gear                      
+## 0  3         0  0  0  0 12  0
+##    4         0  0  0  2  0  0
+##    5         0  1  0  1  0  2
+## 1  3         1  0  2  0  0  0
+##    4         2  6  2  0  0  0
+##    5         0  1  0  0  0  0
+</code></pre>
+
+<pre><code class="r">
+## xtable install.packages(&#39;xtable&#39;)
+library(xtable)
+
+d &lt;- data.frame(tail = c(12, 11, 32, 0), legs = c(4, 4, 4, 2), height = c(31, 
+    35, 62, 68))
+d
+</code></pre>
+
+<pre><code>##   tail legs height
+## 1   12    4     31
+## 2   11    4     35
+## 3   32    4     62
+## 4    0    2     68
+</code></pre>
+
+<pre><code class="r"># res &lt;- xtable(d)
+print(xtable(d), type = &quot;html&quot;)  # output omitted
+</code></pre>
+
+<pre><code>## &lt;!-- html table generated in R 3.0.2 by xtable 1.7-3 package --&gt;
+## &lt;!-- Thu May 22 07:28:44 2014 --&gt;
+## &lt;TABLE border=1&gt;
+## &lt;TR&gt; &lt;TH&gt;  &lt;/TH&gt; &lt;TH&gt; tail &lt;/TH&gt; &lt;TH&gt; legs &lt;/TH&gt; &lt;TH&gt; height &lt;/TH&gt;  &lt;/TR&gt;
+##   &lt;TR&gt; &lt;TD align=&quot;right&quot;&gt; 1 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 12.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 4.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 31.00 &lt;/TD&gt; &lt;/TR&gt;
+##   &lt;TR&gt; &lt;TD align=&quot;right&quot;&gt; 2 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 11.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 4.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 35.00 &lt;/TD&gt; &lt;/TR&gt;
+##   &lt;TR&gt; &lt;TD align=&quot;right&quot;&gt; 3 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 32.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 4.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 62.00 &lt;/TD&gt; &lt;/TR&gt;
+##   &lt;TR&gt; &lt;TD align=&quot;right&quot;&gt; 4 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 0.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 2.00 &lt;/TD&gt; &lt;TD align=&quot;right&quot;&gt; 68.00 &lt;/TD&gt; &lt;/TR&gt;
+##    &lt;/TABLE&gt;
+</code></pre>
+
+<pre><code class="r">
+</code></pre>
+
+</body>
+
+</html>
+
