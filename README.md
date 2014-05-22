@@ -1,4 +1,4 @@
 WearCompProject
 ===============
 
-Wearing Computing Project
+Wearable Computing Project
