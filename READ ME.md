@@ -1,7 +1,56 @@
 READ ME
 ========================================================
+WearCompProject - short for 'Wearable Computing Project'
+========================================================
+## Course Project under the Coursera Course: 'Getting and Cleaning Data'
+By Kristian Kragh, Denmark
 
-Appendix. 
+## The Goal of the project is: 
+## To analyse on relevant data, captured from Samsung wearable computing devices.
+
+Original Data.
+========================================================
+Original is taken from a zip-file, downloaded from 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip' on 2014-05-12 13:31 CEST
+
+This zip-file contains the following txt-files:
+
+- activity_labels.txt
+- features.txt
+- features_info.txt
+
+	- X_train.txt
+	- y_train.txt
+	- subject_train.txt
+	
+	- X_test.txt
+	- y_test.txt
+	- subject_test.txt
+
+	
+- a number of files containing detail-data related to collection of train-data
+- a number of files containing detail-data related to collection of test-data
+
+Only the 'non-detail' were used for the analysis-project.
+
+The structure of the R-program:
+======================================================== 
+## General raw data is read into R from text-files.
+## Raw-data related to the train data-collection are read into R from text-files.
+## Raw-data related to the test data-collection are read into R from text-files
+
+## Various data-exploring analyses are done in the effort to understand data-structure and contents.
+
+## All the selected data are merged into one single data-frame.
+
+## A subset of only mean- and std-features is selected from that merged single data-frame.
+
+## Averages of all feature from the merged one single data-frame (are the subset one) are calculated.
+
+## The subset data-frame is written to a txt-file, called result1.txt
+## The averages data-frame is written to a txt-file, called result2.txt
+
+
+Appendix 1. 
 ========================================================
 ## Complete R-Markdown Report -----------     Course Project. 
 ## Coursera-Course. 'Getting and Cleaning Data'. May 2014 
@@ -800,7 +849,9 @@ write.table(averages, "C:/Users/Kristian/SkyDrive/Coursera/Data Science Speciali
     sep = ",")
 ```
 
-### Appendix !!!. Investigate apply etc.
+Appendix 2. !!!. Investigate apply etc.
+========================================================
+
 
 ```r
 xx <- data.frame(group = rep(1:4, 100), a = rnorm(400), b = rnorm(400))
